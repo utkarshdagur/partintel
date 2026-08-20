@@ -1,0 +1,5 @@
+product_id,category,status,verified,needs_review,conflicts,rules_run,extracted,output
+6205-2RS,deep_groove_ball_bearing,ok,13,2,1,12,15,C:\Users\ACER\product-intel\output\6205_product.json
+V2000-BS,2_way_ball_valve,ok,9,0,0,10,9,C:\Users\ACER\product-intel\output\valve_product.json
+ME-132S-4,electric_motor,ok,13,0,0,15,13,C:\Users\ACER\product-intel\output\motor_product.json
+GRX-225-M,helical_gear_reducer,ok,11,1,1,11,12,C:\Users\ACER\product-intel\output\gearbox_product.json

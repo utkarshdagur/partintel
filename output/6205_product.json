@@ -1,0 +1,905 @@
+{
+  "product_id": "6205-2RS",
+  "category": "deep_groove_ball_bearing",
+  "category_label": "Deep groove ball bearing",
+  "pipeline": {
+    "version": "1.0.0",
+    "mode": "mock",
+    "provider_note": "deterministic mock (offline)",
+    "run_at": "2026-08-08T18:53:10+00:00"
+  },
+  "sources": [
+    {
+      "id": "src_pdf",
+      "type": "pdf",
+      "title": "Datasheet 6205-2RSH (rev 4, p.1)",
+      "authority": 0.95,
+      "lines": 13,
+      "fields_extracted": 11,
+      "path": "data/sample/6205_datasheet.pdf.txt"
+    },
+    {
+      "id": "src_web",
+      "type": "web",
+      "title": "Manufacturer product page - 6205-2RS",
+      "authority": 0.85,
+      "lines": 11,
+      "fields_extracted": 12,
+      "path": "data/sample/6205_webpage.html"
+    },
+    {
+      "id": "src_ocr",
+      "type": "ocr",
+      "title": "Product photo OCR (stamping on bearing face)",
+      "authority": 0.7,
+      "lines": 5,
+      "fields_extracted": 6,
+      "path": "data/sample/6205_photo_ocr.txt"
+    }
+  ],
+  "fields": [
+    {
+      "field": "part_number",
+      "label": "Part number",
+      "unit": null,
+      "value": "6205-2RSH",
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "part_number",
+          "value": "6205-2RSH",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "SKF 6205-2RSH Deep groove ball bearing",
+          "line_start": 1,
+          "line_end": 1,
+          "reasoning": "Pattern matched on line 1: SKF 6205-2RSH Deep groove ball bearing"
+        },
+        {
+          "field": "part_number",
+          "value": "6205-2RS",
+          "unit": null,
+          "confidence": 0.85,
+          "method": "llm_inference",
+          "source_id": "src_web",
+          "snippet": "6205-2RS Ball Bearing",
+          "line_start": 1,
+          "line_end": 1,
+          "reasoning": "Pattern matched on line 1: 6205-2RS Ball Bearing"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Part number (normalized '6205'); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "brand",
+      "label": "Brand",
+      "unit": null,
+      "value": "SKF",
+      "confidence": 0.857,
+      "status": "verified",
+      "flags": [
+        "single_source"
+      ],
+      "sources": [
+        {
+          "field": "brand",
+          "value": "SKF",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "SKF 6205-2RSH Deep groove ball bearing",
+          "line_start": 1,
+          "line_end": 1,
+          "reasoning": "Pattern matched on line 1: SKF 6205-2RSH Deep groove ball bearing"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "Single source (src_pdf) provides Brand; effective confidence 0.86.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "bore_diameter",
+      "label": "Bore diameter (d)",
+      "unit": "mm",
+      "value": 25,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "bore_diameter",
+          "value": "25",
+          "unit": "mm",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "d [mm] 25",
+          "line_start": 4,
+          "line_end": 4,
+          "reasoning": "Pattern matched on line 4: d [mm] 25"
+        },
+        {
+          "field": "bore_diameter",
+          "value": "25",
+          "unit": "mm",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Bore: 25 mm, OD: 52 mm, Width: 15 mm.",
+          "line_start": 3,
+          "line_end": 3,
+          "reasoning": "Pattern matched on line 3: Bore: 25 mm, OD: 52 mm, Width: 15 mm."
+        },
+        {
+          "field": "bore_diameter",
+          "value": "25",
+          "unit": "mm",
+          "confidence": 0.7,
+          "method": "llm_inference",
+          "source_id": "src_ocr",
+          "snippet": "25x52x15",
+          "line_start": 3,
+          "line_end": 3,
+          "reasoning": "Pattern matched on line 3: 25x52x15"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "3 sources agree on Bore diameter (d) (normalized 25.0); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "outer_diameter",
+      "label": "Outer diameter (D)",
+      "unit": "mm",
+      "value": 52,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "outer_diameter",
+          "value": "52",
+          "unit": "mm",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "D [mm] 52",
+          "line_start": 5,
+          "line_end": 5,
+          "reasoning": "Pattern matched on line 5: D [mm] 52"
+        },
+        {
+          "field": "outer_diameter",
+          "value": "52",
+          "unit": "mm",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Bore: 25 mm, OD: 52 mm, Width: 15 mm.",
+          "line_start": 3,
+          "line_end": 3,
+          "reasoning": "Pattern matched on line 3: Bore: 25 mm, OD: 52 mm, Width: 15 mm."
+        },
+        {
+          "field": "outer_diameter",
+          "value": "52",
+          "unit": "mm",
+          "confidence": 0.7,
+          "method": "llm_inference",
+          "source_id": "src_ocr",
+          "snippet": "25x52x15",
+          "line_start": 3,
+          "line_end": 3,
+          "reasoning": "Pattern matched on line 3: 25x52x15"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "3 sources agree on Outer diameter (D) (normalized 52.0); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "width",
+      "label": "Width (B)",
+      "unit": "mm",
+      "value": 15,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "width",
+          "value": "15",
+          "unit": "mm",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "B [mm] 15",
+          "line_start": 6,
+          "line_end": 6,
+          "reasoning": "Pattern matched on line 6: B [mm] 15"
+        },
+        {
+          "field": "width",
+          "value": "15",
+          "unit": "mm",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Bore: 25 mm, OD: 52 mm, Width: 15 mm.",
+          "line_start": 3,
+          "line_end": 3,
+          "reasoning": "Pattern matched on line 3: Bore: 25 mm, OD: 52 mm, Width: 15 mm."
+        },
+        {
+          "field": "width",
+          "value": "15",
+          "unit": "mm",
+          "confidence": 0.7,
+          "method": "llm_inference",
+          "source_id": "src_ocr",
+          "snippet": "25x52x15",
+          "line_start": 3,
+          "line_end": 3,
+          "reasoning": "Pattern matched on line 3: 25x52x15"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "3 sources agree on Width (B) (normalized 15.0); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "dynamic_load_rating",
+      "label": "Dynamic load rating (C)",
+      "unit": "kN",
+      "value": 14,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "dynamic_load_rating",
+          "value": "14.0",
+          "unit": "kN",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Basic dynamic load rating C 14.0 kN",
+          "line_start": 8,
+          "line_end": 8,
+          "reasoning": "Pattern matched on line 8: Basic dynamic load rating C 14.0 kN"
+        },
+        {
+          "field": "dynamic_load_rating",
+          "value": "14000",
+          "unit": "N",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Dynamic load rating  |  14000 N",
+          "line_start": 4,
+          "line_end": 4,
+          "reasoning": "Pattern matched on line 4: Dynamic load rating  |  14000 N"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Dynamic load rating (C) (normalized 14.0); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "static_load_rating",
+      "label": "Static load rating (C0)",
+      "unit": "kN",
+      "value": 7.8,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "static_load_rating",
+          "value": "7.8",
+          "unit": "kN",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Basic static load rating C0 7.8 kN",
+          "line_start": 9,
+          "line_end": 9,
+          "reasoning": "Pattern matched on line 9: Basic static load rating C0 7.8 kN"
+        },
+        {
+          "field": "static_load_rating",
+          "value": "7800",
+          "unit": "N",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Static load rating  |  7 800 N",
+          "line_start": 5,
+          "line_end": 5,
+          "reasoning": "Pattern matched on line 5: Static load rating  |  7 800 N"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Static load rating (C0) (normalized 7.8); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "max_speed",
+      "label": "Max speed",
+      "unit": "rpm",
+      "value": null,
+      "confidence": 0.4,
+      "status": "needs_review",
+      "flags": [
+        "conflict"
+      ],
+      "sources": [
+        {
+          "field": "max_speed",
+          "value": "13000",
+          "unit": "rpm",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Limiting speed 13000 r/min",
+          "line_start": 11,
+          "line_end": 11,
+          "reasoning": "Pattern matched on line 11: Limiting speed 13000 r/min"
+        },
+        {
+          "field": "max_speed",
+          "value": "12000",
+          "unit": "rpm",
+          "confidence": 0.85,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Max speed (grease)  |  12 000 rpm",
+          "line_start": 6,
+          "line_end": 6,
+          "reasoning": "Pattern matched on line 6: Max speed (grease)  |  12 000 rpm"
+        }
+      ],
+      "conflicts": [
+        {
+          "field": "max_speed",
+          "reason": "Sources disagree on Max speed: src_pdf=13000 rpm; src_web=12000 rpm",
+          "values": [
+            {
+              "source_id": "src_pdf",
+              "value": "13000",
+              "unit": "rpm"
+            },
+            {
+              "source_id": "src_web",
+              "value": "12000",
+              "unit": "rpm"
+            }
+          ]
+        }
+      ],
+      "reasoning": "Sources disagree on Max speed: src_pdf=13000 rpm; src_web=12000 rpm",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "weight",
+      "label": "Weight",
+      "unit": "kg",
+      "value": 0.127,
+      "confidence": 0.857,
+      "status": "verified",
+      "flags": [
+        "single_source"
+      ],
+      "sources": [
+        {
+          "field": "weight",
+          "value": "0.127",
+          "unit": "kg",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Mass 0.127 kg",
+          "line_start": 13,
+          "line_end": 13,
+          "reasoning": "Pattern matched on line 13: Mass 0.127 kg"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "Single source (src_pdf) provides Weight; effective confidence 0.86.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "seal_type",
+      "label": "Seal type",
+      "unit": null,
+      "value": "2RS",
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "seal_type",
+          "value": "2RS",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "llm_inference",
+          "source_id": "src_pdf",
+          "snippet": "Seal  Contact seal, RS1 on both sides",
+          "line_start": 15,
+          "line_end": 15,
+          "reasoning": "Pattern matched on line 15: Seal  Contact seal, RS1 on both sides"
+        },
+        {
+          "field": "seal_type",
+          "value": "2RS",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Seal  |  2RS (rubber contact)",
+          "line_start": 8,
+          "line_end": 8,
+          "reasoning": "Pattern matched on line 8: Seal  |  2RS (rubber contact)"
+        },
+        {
+          "field": "seal_type",
+          "value": "2RS",
+          "unit": null,
+          "confidence": 0.6,
+          "method": "ocr_heuristic",
+          "source_id": "src_ocr",
+          "snippet": "2RS",
+          "line_start": 2,
+          "line_end": 2,
+          "reasoning": "Pattern matched on line 2: 2RS"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "3 sources agree on Seal type (normalized '2RS'); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "clearance",
+      "label": "Internal clearance",
+      "unit": null,
+      "value": "CN",
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "clearance",
+          "value": "CN",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Internal clearance  CN",
+          "line_start": 16,
+          "line_end": 16,
+          "reasoning": "Pattern matched on line 16: Internal clearance  CN"
+        },
+        {
+          "field": "clearance",
+          "value": "CN",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Internal clearance  |  CN",
+          "line_start": 9,
+          "line_end": 9,
+          "reasoning": "Pattern matched on line 9: Internal clearance  |  CN"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Internal clearance (normalized 'CN'); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "temperature_range_min",
+      "label": "Min operating temp",
+      "unit": "°C",
+      "value": -20,
+      "confidence": 0.767,
+      "status": "verified",
+      "flags": [
+        "single_source"
+      ],
+      "sources": [
+        {
+          "field": "temperature_range_min",
+          "value": "-20",
+          "unit": "°C",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Operating temperature  |  -20 °C to +120 °C",
+          "line_start": 7,
+          "line_end": 7,
+          "reasoning": "Pattern matched on line 7: Operating temperature  |  -20 °C to +120 °C"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "Single source (src_web) provides Min operating temp; effective confidence 0.77.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "temperature_range_max",
+      "label": "Max operating temp",
+      "unit": "°C",
+      "value": 120,
+      "confidence": 0.767,
+      "status": "verified",
+      "flags": [
+        "single_source"
+      ],
+      "sources": [
+        {
+          "field": "temperature_range_max",
+          "value": "+120",
+          "unit": "°C",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Operating temperature  |  -20 °C to +120 °C",
+          "line_start": 7,
+          "line_end": 7,
+          "reasoning": "Pattern matched on line 7: Operating temperature  |  -20 °C to +120 °C"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "Single source (src_web) provides Max operating temp; effective confidence 0.77.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "country_of_origin",
+      "label": "Country of origin",
+      "unit": null,
+      "value": "Japan",
+      "confidence": 0.887,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "country_of_origin",
+          "value": "Japan",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Made in  |  Japan",
+          "line_start": 10,
+          "line_end": 10,
+          "reasoning": "Pattern matched on line 10: Made in  |  Japan"
+        },
+        {
+          "field": "country_of_origin",
+          "value": "Japan",
+          "unit": null,
+          "confidence": 0.6,
+          "method": "ocr_heuristic",
+          "source_id": "src_ocr",
+          "snippet": "JAPAN",
+          "line_start": 4,
+          "line_end": 4,
+          "reasoning": "Pattern matched on line 4: JAPAN"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Country of origin (normalized 'japan'); confidence boosted from 0.81 to 0.89.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "precision_grade",
+      "label": "Precision grade",
+      "unit": null,
+      "value": "ABEC 1",
+      "confidence": 0.366,
+      "status": "needs_review",
+      "flags": [
+        "single_source",
+        "low_confidence"
+      ],
+      "sources": [
+        {
+          "field": "precision_grade",
+          "value": "ABEC 1",
+          "unit": null,
+          "confidence": 0.55,
+          "method": "ocr_heuristic",
+          "source_id": "src_ocr",
+          "snippet": "ABEC 1",
+          "line_start": 5,
+          "line_end": 5,
+          "reasoning": "Pattern matched on line 5: ABEC 1"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "Single source (src_ocr) provides Precision grade; effective confidence 0.37.",
+      "dropped": [],
+      "validation_issues": []
+    }
+  ],
+  "validation": {
+    "passed": true,
+    "rules_run": 12,
+    "issues": [],
+    "note": "Explicit category rule table (not ML); rules only run on extracted fields."
+  },
+  "needs_review_queue": [
+    {
+      "field": "max_speed",
+      "label": "Max speed",
+      "confidence": 0.4,
+      "flags": [
+        "conflict"
+      ],
+      "reason": "Sources disagree on Max speed: src_pdf=13000 rpm; src_web=12000 rpm",
+      "value": null,
+      "sources": [
+        "src_pdf",
+        "src_web"
+      ]
+    },
+    {
+      "field": "precision_grade",
+      "label": "Precision grade",
+      "confidence": 0.366,
+      "flags": [
+        "single_source",
+        "low_confidence"
+      ],
+      "reason": "Only 1 source(s), effective confidence 0.37 < 0.75 threshold",
+      "value": "ABEC 1",
+      "sources": [
+        "src_ocr"
+      ]
+    }
+  ],
+  "marketing": {
+    "description": "The 6205-2RSH is a sealed deep groove ball bearing with a 25 mm bore, 52 mm outer diameter and 15 mm width. It is rated for a dynamic load of 14 kN and a static load of 7.8 kN. Operating temperature range is -20 °C to 120 °C. The unit weighs 0.127 kg.",
+    "citations": [
+      {
+        "field": "part_number",
+        "label": "Part number",
+        "value": "6205-2RSH",
+        "sources": [
+          {
+            "source_id": "src_pdf",
+            "snippet": "SKF 6205-2RSH Deep groove ball bearing"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "6205-2RS Ball Bearing"
+          }
+        ]
+      },
+      {
+        "field": "seal_type",
+        "label": "Seal type",
+        "value": "2RS",
+        "sources": [
+          {
+            "source_id": "src_pdf",
+            "snippet": "Seal  Contact seal, RS1 on both sides"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Seal  |  2RS (rubber contact)"
+          },
+          {
+            "source_id": "src_ocr",
+            "snippet": "2RS"
+          }
+        ]
+      },
+      {
+        "field": "bore_diameter",
+        "label": "Bore diameter (d)",
+        "value": "25",
+        "sources": [
+          {
+            "source_id": "src_pdf",
+            "snippet": "d [mm] 25"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Bore: 25 mm, OD: 52 mm, Width: 15 mm."
+          },
+          {
+            "source_id": "src_ocr",
+            "snippet": "25x52x15"
+          }
+        ]
+      },
+      {
+        "field": "outer_diameter",
+        "label": "Outer diameter (D)",
+        "value": "52",
+        "sources": [
+          {
+            "source_id": "src_pdf",
+            "snippet": "D [mm] 52"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Bore: 25 mm, OD: 52 mm, Width: 15 mm."
+          },
+          {
+            "source_id": "src_ocr",
+            "snippet": "25x52x15"
+          }
+        ]
+      },
+      {
+        "field": "width",
+        "label": "Width (B)",
+        "value": "15",
+        "sources": [
+          {
+            "source_id": "src_pdf",
+            "snippet": "B [mm] 15"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Bore: 25 mm, OD: 52 mm, Width: 15 mm."
+          },
+          {
+            "source_id": "src_ocr",
+            "snippet": "25x52x15"
+          }
+        ]
+      },
+      {
+        "field": "dynamic_load_rating",
+        "label": "Dynamic load rating (C)",
+        "value": "14",
+        "sources": [
+          {
+            "source_id": "src_pdf",
+            "snippet": "Basic dynamic load rating C 14.0 kN"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Dynamic load rating  |  14000 N"
+          }
+        ]
+      },
+      {
+        "field": "static_load_rating",
+        "label": "Static load rating (C0)",
+        "value": "7.8",
+        "sources": [
+          {
+            "source_id": "src_pdf",
+            "snippet": "Basic static load rating C0 7.8 kN"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Static load rating  |  7 800 N"
+          }
+        ]
+      },
+      {
+        "field": "temperature_range_min",
+        "label": "Min operating temp",
+        "value": "-20",
+        "sources": [
+          {
+            "source_id": "src_web",
+            "snippet": "Operating temperature  |  -20 °C to +120 °C"
+          }
+        ]
+      },
+      {
+        "field": "temperature_range_max",
+        "label": "Max operating temp",
+        "value": "120",
+        "sources": [
+          {
+            "source_id": "src_web",
+            "snippet": "Operating temperature  |  -20 °C to +120 °C"
+          }
+        ]
+      },
+      {
+        "field": "weight",
+        "label": "Weight",
+        "value": "0.127",
+        "sources": [
+          {
+            "source_id": "src_pdf",
+            "snippet": "Mass 0.127 kg"
+          }
+        ]
+      }
+    ],
+    "sentences_skipped": [
+      "sentence using max_speed skipped (needs_review/missing/conflict)"
+    ],
+    "note": "Marketing copy only cites verified fields; needs_review fields are never auto-published."
+  },
+  "summary": {
+    "total_fields_in_schema": 16,
+    "extracted": 15,
+    "omitted_not_found": [
+      "material"
+    ],
+    "verified": 13,
+    "needs_review": 2,
+    "conflicts": 1,
+    "rules_run": 12
+  },
+  "ai_review": {
+    "mode": "mock",
+    "provider_note": "deterministic template review (offline)",
+    "reviews": [
+      {
+        "field": "max_speed",
+        "label": "Max speed",
+        "flags": [
+          "conflict"
+        ],
+        "confidence": 0.4,
+        "value": null,
+        "review": "Cross-source conflict on Max speed: Sources disagree on Max speed: src_pdf=13000 rpm; src_web=12000 rpm. The values disagree beyond the 1% (relative, with a 0.05 absolute floor) agreement tolerance, so neither can be auto-published without human judgment.",
+        "suggested_action": "Check the highest-authority source (Datasheet 6205-2RSH (rev 4, p.1) (authority 0.95), Manufacturer product page - 6205-2RS (authority 0.85)) for a typo or a different operating condition, then record the single correct value."
+      },
+      {
+        "field": "precision_grade",
+        "label": "Precision grade",
+        "flags": [
+          "single_source",
+          "low_confidence"
+        ],
+        "confidence": 0.366,
+        "value": "ABEC 1",
+        "review": "Precision grade is backed by only 1 source(s) with effective confidence 0.37, below the 0.75 verification threshold. With no second independent source there is no cross-check.",
+        "suggested_action": "Confirm Precision grade from an additional independent source to raise confidence above 0.75."
+      }
+    ],
+    "summary": "Reviewed 2 field(s): 1 conflict(s), 1 low-confidence, 0 validation. None can auto-publish until resolved.",
+    "fields_reviewed": 2,
+    "all_clear": false
+  }
+}

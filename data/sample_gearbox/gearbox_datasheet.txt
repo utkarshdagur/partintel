@@ -1,0 +1,13 @@
+Part no.  GRX-225-M
+Brand  HelmDrive
+Type  Helical gear reducer, single stage
+Ratio  25 : 1
+Input speed  1450 r/min
+Output speed  58 r/min
+Rated torque  450 N·m
+Service factor  1.4
+Efficiency  94 %
+Mounting  B3
+Protection  IP55
+Lubrication  oil
+Mass  62 kg

@@ -1,0 +1,27 @@
+{
+  "product_id": "ME-132S-4",
+  "category": "electric_motor",
+  "sources": [
+    {
+      "id": "src_pdf",
+      "type": "pdf",
+      "title": "Datasheet ME-132S-4 (IEC 60034, p.1)",
+      "path": "data/sample_motor/motor_datasheet.txt",
+      "authority": 0.95
+    },
+    {
+      "id": "src_web",
+      "type": "web",
+      "title": "Manufacturer product page - ME-132S-4",
+      "path": "data/sample_motor/motor_webpage.html",
+      "authority": 0.85
+    },
+    {
+      "id": "src_ocr",
+      "type": "ocr",
+      "title": "Nameplate photo OCR (stamping on terminal box)",
+      "path": "data/sample_motor/motor_photo_ocr.txt",
+      "authority": 0.7
+    }
+  ]
+}

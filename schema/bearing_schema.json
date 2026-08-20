@@ -1,0 +1,24 @@
+{
+  "category": "deep_groove_ball_bearing",
+  "category_label": "Deep groove ball bearing",
+  "version": "1.0",
+  "description": "Single-row deep groove ball bearings (6000-series). Standard dimensions d/D/B, load ratings C/C0, speed limits, seals, clearance classes.",
+  "fields": [
+    {"name": "part_number", "label": "Part number", "type": "string", "unit": null, "description": "Manufacturer designation, e.g. 6205-2RS"},
+    {"name": "brand", "label": "Brand", "type": "string", "unit": null, "description": "Manufacturer brand name"},
+    {"name": "bore_diameter", "label": "Bore diameter (d)", "type": "number", "unit": "mm", "description": "Inner ring bore diameter"},
+    {"name": "outer_diameter", "label": "Outer diameter (D)", "type": "number", "unit": "mm", "description": "Outer ring outside diameter"},
+    {"name": "width", "label": "Width (B)", "type": "number", "unit": "mm", "description": "Bearing width"},
+    {"name": "dynamic_load_rating", "label": "Dynamic load rating (C)", "type": "number", "unit": "kN", "description": "Basic dynamic load rating"},
+    {"name": "static_load_rating", "label": "Static load rating (C0)", "type": "number", "unit": "kN", "description": "Basic static load rating"},
+    {"name": "max_speed", "label": "Max speed", "type": "number", "unit": "rpm", "description": "Limiting / maximum rotational speed"},
+    {"name": "weight", "label": "Weight", "type": "number", "unit": "kg", "description": "Bearing mass"},
+    {"name": "seal_type", "label": "Seal type", "type": "enum", "unit": null, "enum": ["open", "RS", "2RS", "2Z", "ZZ", "2RU"], "description": "Sealing arrangement"},
+    {"name": "clearance", "label": "Internal clearance", "type": "enum", "unit": null, "enum": ["C2", "CN", "C3", "C4", "C5"], "description": "Radial internal clearance class"},
+    {"name": "temperature_range_min", "label": "Min operating temp", "type": "number", "unit": "°C", "description": "Lower bound of operating temperature range"},
+    {"name": "temperature_range_max", "label": "Max operating temp", "type": "number", "unit": "°C", "description": "Upper bound of operating temperature range"},
+    {"name": "country_of_origin", "label": "Country of origin", "type": "string", "unit": null, "description": "Country where the product is made"},
+    {"name": "precision_grade", "label": "Precision grade", "type": "enum", "unit": null, "enum": ["ABEC 1", "ABEC 3", "ABEC 5", "ABEC 7", "P0", "P6", "P5"], "description": "Tolerance / precision class"},
+    {"name": "material", "label": "Material", "type": "string", "unit": null, "description": "Ring / ball material composition"}
+  ]
+}

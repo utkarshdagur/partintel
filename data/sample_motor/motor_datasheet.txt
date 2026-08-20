@@ -1,0 +1,14 @@
+Part no.  ME-132S-4
+Brand  VoltTech
+Type  Three-phase induction motor, IEC frame 132S
+Output power  7.5 kW
+Rated voltage  400 V
+Rated current  15.2 A
+Rated speed  1450 r/min
+Frequency  50 Hz
+Efficiency  90.5 %
+Frame size  132S
+Protection  IP55
+Insulation class  F
+Mounting  B3
+Mass  62 kg

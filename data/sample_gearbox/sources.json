@@ -1,0 +1,27 @@
+{
+  "product_id": "GRX-225-M",
+  "category": "helical_gear_reducer",
+  "sources": [
+    {
+      "id": "src_pdf",
+      "type": "pdf",
+      "title": "Datasheet GRX-225-M (rev 2, p.1)",
+      "path": "data/sample_gearbox/gearbox_datasheet.txt",
+      "authority": 0.95
+    },
+    {
+      "id": "src_web",
+      "type": "web",
+      "title": "Distributor product page - GRX-225-M",
+      "path": "data/sample_gearbox/gearbox_webpage.html",
+      "authority": 0.85
+    },
+    {
+      "id": "src_ocr",
+      "type": "ocr",
+      "title": "Nameplate photo OCR (stamping on gear case)",
+      "path": "data/sample_gearbox/gearbox_photo_ocr.txt",
+      "authority": 0.7
+    }
+  ]
+}

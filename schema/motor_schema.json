@@ -1,0 +1,21 @@
+{
+  "category": "electric_motor",
+  "category_label": "Three-phase induction motor",
+  "version": "1.0",
+  "description": "Three-phase induction motors (IEC frame). Rated output power, voltage, current, speed, efficiency, frequency, frame size, protection class, insulation class, mounting, weight.",
+  "fields": [
+    {"name": "part_number", "label": "Part number", "type": "string", "unit": null, "description": "Manufacturer designation, e.g. ME-132S-4"},
+    {"name": "brand", "label": "Brand", "type": "string", "unit": null, "description": "Manufacturer brand name"},
+    {"name": "power_kw", "label": "Rated output power", "type": "number", "unit": "kW", "description": "Rated mechanical output power"},
+    {"name": "rated_voltage", "label": "Rated voltage", "type": "number", "unit": "V", "description": "Rated supply voltage"},
+    {"name": "rated_current", "label": "Rated current", "type": "number", "unit": "A", "description": "Rated full-load current"},
+    {"name": "rated_speed", "label": "Rated speed", "type": "number", "unit": "rpm", "description": "Rated full-load rotational speed"},
+    {"name": "efficiency", "label": "Efficiency", "type": "number", "unit": "%", "description": "Rated efficiency class value"},
+    {"name": "frequency", "label": "Frequency", "type": "number", "unit": "Hz", "description": "Rated supply frequency"},
+    {"name": "frame_size", "label": "Frame size", "type": "enum", "unit": null, "enum": ["80", "90S", "90L", "100L", "112M", "132S", "132M", "160M", "160L", "180M", "200L", "225S", "225M", "250M"], "description": "IEC frame size designation"},
+    {"name": "protection_class", "label": "Protection class", "type": "enum", "unit": null, "enum": ["IP44", "IP55", "IP56", "IP65", "IP66", "IP67"], "description": "Ingress protection rating"},
+    {"name": "insulation_class", "label": "Insulation class", "type": "enum", "unit": null, "enum": ["B", "F", "H"], "description": "Thermal insulation class"},
+    {"name": "mounting", "label": "Mounting", "type": "enum", "unit": null, "enum": ["B3", "B5", "B35", "V1", "V3"], "description": "IEC mounting arrangement"},
+    {"name": "weight", "label": "Weight", "type": "number", "unit": "kg", "description": "Motor mass"}
+  ]
+}

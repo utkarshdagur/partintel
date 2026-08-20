@@ -1,0 +1,27 @@
+{
+  "product_id": "6205-2RS",
+  "category": "deep_groove_ball_bearing",
+  "sources": [
+    {
+      "id": "src_pdf",
+      "type": "pdf",
+      "title": "Datasheet 6205-2RSH (rev 4, p.1)",
+      "path": "data/sample/6205_datasheet.pdf.txt",
+      "authority": 0.95
+    },
+    {
+      "id": "src_web",
+      "type": "web",
+      "title": "Manufacturer product page - 6205-2RS",
+      "path": "data/sample/6205_webpage.html",
+      "authority": 0.85
+    },
+    {
+      "id": "src_ocr",
+      "type": "ocr",
+      "title": "Product photo OCR (stamping on bearing face)",
+      "path": "data/sample/6205_photo_ocr.txt",
+      "authority": 0.7
+    }
+  ]
+}

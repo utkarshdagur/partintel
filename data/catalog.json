@@ -1,0 +1,30 @@
+{
+  "catalog_id": "demo",
+  "name": "PartIntel demo catalog",
+  "products": [
+    {
+      "product_id": "6205-2RS",
+      "manifest": "data/sample/sources.json",
+      "schema": "schema/bearing_schema.json",
+      "output": "output/6205_product.json"
+    },
+    {
+      "product_id": "V2000-BS",
+      "manifest": "data/sample_valve/sources.json",
+      "schema": "schema/valve_schema.json",
+      "output": "output/valve_product.json"
+    },
+    {
+      "product_id": "ME-132S-4",
+      "manifest": "data/sample_motor/sources.json",
+      "schema": "schema/motor_schema.json",
+      "output": "output/motor_product.json"
+    },
+    {
+      "product_id": "GRX-225-M",
+      "manifest": "data/sample_gearbox/sources.json",
+      "schema": "schema/gearbox_schema.json",
+      "output": "output/gearbox_product.json"
+    }
+  ]
+}

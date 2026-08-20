@@ -1,0 +1,17 @@
+SKF 6205-2RSH Deep groove ball bearing
+Single row, contact seals on both sides, snap ring groove
+
+d [mm] 25
+D [mm] 52
+B [mm] 15
+
+Basic dynamic load rating C 14.0 kN
+Basic static load rating C0 7.8 kN
+
+Limiting speed 13000 r/min
+Reference speed 18000 r/min
+Mass 0.127 kg
+
+Seal  Contact seal, RS1 on both sides
+Internal clearance  CN
+Cage  Sheet metal, steel, riveted

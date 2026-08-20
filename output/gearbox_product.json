@@ -1,0 +1,656 @@
+{
+  "product_id": "GRX-225-M",
+  "category": "helical_gear_reducer",
+  "category_label": "Helical gear reducer",
+  "pipeline": {
+    "version": "1.0.0",
+    "mode": "mock",
+    "provider_note": "deterministic mock (offline)",
+    "run_at": "2026-08-08T18:53:10+00:00"
+  },
+  "sources": [
+    {
+      "id": "src_pdf",
+      "type": "pdf",
+      "title": "Datasheet GRX-225-M (rev 2, p.1)",
+      "authority": 0.95,
+      "lines": 13,
+      "fields_extracted": 12,
+      "path": "data/sample_gearbox/gearbox_datasheet.txt"
+    },
+    {
+      "id": "src_web",
+      "type": "web",
+      "title": "Distributor product page - GRX-225-M",
+      "authority": 0.85,
+      "lines": 12,
+      "fields_extracted": 11,
+      "path": "data/sample_gearbox/gearbox_webpage.html"
+    },
+    {
+      "id": "src_ocr",
+      "type": "ocr",
+      "title": "Nameplate photo OCR (stamping on gear case)",
+      "authority": 0.7,
+      "lines": 5,
+      "fields_extracted": 5,
+      "path": "data/sample_gearbox/gearbox_photo_ocr.txt"
+    }
+  ],
+  "fields": [
+    {
+      "field": "part_number",
+      "label": "Part number",
+      "unit": null,
+      "value": "GRX-225-M",
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "part_number",
+          "value": "GRX-225-M",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Part no.  GRX-225-M",
+          "line_start": 1,
+          "line_end": 1,
+          "reasoning": "Pattern matched on line 1: Part no.  GRX-225-M"
+        },
+        {
+          "field": "part_number",
+          "value": "GRX-225-M",
+          "unit": null,
+          "confidence": 0.85,
+          "method": "llm_inference",
+          "source_id": "src_web",
+          "snippet": "GRX-225-M Gear Reducer",
+          "line_start": 1,
+          "line_end": 1,
+          "reasoning": "Pattern matched on line 1: GRX-225-M Gear Reducer"
+        },
+        {
+          "field": "part_number",
+          "value": "GRX-225-M",
+          "unit": null,
+          "confidence": 0.7,
+          "method": "ocr_heuristic",
+          "source_id": "src_ocr",
+          "snippet": "GRX-225-M",
+          "line_start": 1,
+          "line_end": 1,
+          "reasoning": "Pattern matched on line 1: GRX-225-M"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "3 sources agree on Part number (normalized 'grx-225-m'); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "brand",
+      "label": "Brand",
+      "unit": null,
+      "value": "HelmDrive",
+      "confidence": 0.857,
+      "status": "verified",
+      "flags": [
+        "single_source"
+      ],
+      "sources": [
+        {
+          "field": "brand",
+          "value": "HelmDrive",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Brand  HelmDrive",
+          "line_start": 2,
+          "line_end": 2,
+          "reasoning": "Pattern matched on line 2: Brand  HelmDrive"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "Single source (src_pdf) provides Brand; effective confidence 0.86.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "ratio",
+      "label": "Gear ratio",
+      "unit": null,
+      "value": 25,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "ratio",
+          "value": "25",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Ratio  25 : 1",
+          "line_start": 4,
+          "line_end": 4,
+          "reasoning": "Pattern matched on line 4: Ratio  25 : 1"
+        },
+        {
+          "field": "ratio",
+          "value": "25",
+          "unit": null,
+          "confidence": 0.9,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Ratio  |  25 : 1",
+          "line_start": 3,
+          "line_end": 3,
+          "reasoning": "Pattern matched on line 3: Ratio  |  25 : 1"
+        },
+        {
+          "field": "ratio",
+          "value": "25",
+          "unit": null,
+          "confidence": 0.7,
+          "method": "ocr_heuristic",
+          "source_id": "src_ocr",
+          "snippet": "25 : 1",
+          "line_start": 2,
+          "line_end": 2,
+          "reasoning": "Pattern matched on line 2: 25 : 1"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "3 sources agree on Gear ratio (normalized 25.0); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "input_speed",
+      "label": "Input speed",
+      "unit": "rpm",
+      "value": 1450,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "input_speed",
+          "value": "1450",
+          "unit": "rpm",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Input speed  1450 r/min",
+          "line_start": 5,
+          "line_end": 5,
+          "reasoning": "Pattern matched on line 5: Input speed  1450 r/min"
+        },
+        {
+          "field": "input_speed",
+          "value": "1450",
+          "unit": "rpm",
+          "confidence": 0.9,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Input speed  |  1450 rpm",
+          "line_start": 4,
+          "line_end": 4,
+          "reasoning": "Pattern matched on line 4: Input speed  |  1450 rpm"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Input speed (normalized 1450.0); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "output_speed",
+      "label": "Output speed",
+      "unit": "rpm",
+      "value": null,
+      "confidence": 0.4,
+      "status": "needs_review",
+      "flags": [
+        "conflict"
+      ],
+      "sources": [
+        {
+          "field": "output_speed",
+          "value": "58",
+          "unit": "rpm",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Output speed  58 r/min",
+          "line_start": 6,
+          "line_end": 6,
+          "reasoning": "Pattern matched on line 6: Output speed  58 r/min"
+        },
+        {
+          "field": "output_speed",
+          "value": "60",
+          "unit": "rpm",
+          "confidence": 0.9,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Output speed  |  60 rpm",
+          "line_start": 5,
+          "line_end": 5,
+          "reasoning": "Pattern matched on line 5: Output speed  |  60 rpm"
+        }
+      ],
+      "conflicts": [
+        {
+          "field": "output_speed",
+          "reason": "Sources disagree on Output speed: src_pdf=58 rpm; src_web=60 rpm",
+          "values": [
+            {
+              "source_id": "src_pdf",
+              "value": "58",
+              "unit": "rpm"
+            },
+            {
+              "source_id": "src_web",
+              "value": "60",
+              "unit": "rpm"
+            }
+          ]
+        }
+      ],
+      "reasoning": "Sources disagree on Output speed: src_pdf=58 rpm; src_web=60 rpm",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "rated_torque",
+      "label": "Rated torque",
+      "unit": "Nm",
+      "value": 450,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "rated_torque",
+          "value": "450",
+          "unit": "N·m",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Rated torque  450 N·m",
+          "line_start": 7,
+          "line_end": 7,
+          "reasoning": "Pattern matched on line 7: Rated torque  450 N·m"
+        },
+        {
+          "field": "rated_torque",
+          "value": "332",
+          "unit": "ft-lb",
+          "confidence": 0.9,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Rated torque  |  332 ft-lb",
+          "line_start": 6,
+          "line_end": 6,
+          "reasoning": "Pattern matched on line 6: Rated torque  |  332 ft-lb"
+        },
+        {
+          "field": "rated_torque",
+          "value": "450",
+          "unit": "Nm",
+          "confidence": 0.7,
+          "method": "ocr_heuristic",
+          "source_id": "src_ocr",
+          "snippet": "450 N·m",
+          "line_start": 3,
+          "line_end": 3,
+          "reasoning": "Pattern matched on line 3: 450 N·m"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "3 sources agree on Rated torque (normalized 450.0); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "service_factor",
+      "label": "Service factor",
+      "unit": null,
+      "value": 1.4,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "service_factor",
+          "value": "1.4",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Service factor  1.4",
+          "line_start": 8,
+          "line_end": 8,
+          "reasoning": "Pattern matched on line 8: Service factor  1.4"
+        },
+        {
+          "field": "service_factor",
+          "value": "1.4",
+          "unit": null,
+          "confidence": 0.9,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Service factor  |  1.4",
+          "line_start": 7,
+          "line_end": 7,
+          "reasoning": "Pattern matched on line 7: Service factor  |  1.4"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Service factor (normalized 1.4); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "efficiency",
+      "label": "Efficiency",
+      "unit": "%",
+      "value": 94,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "efficiency",
+          "value": "94",
+          "unit": "%",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Efficiency  94 %",
+          "line_start": 9,
+          "line_end": 9,
+          "reasoning": "Pattern matched on line 9: Efficiency  94 %"
+        },
+        {
+          "field": "efficiency",
+          "value": "94",
+          "unit": "%",
+          "confidence": 0.9,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Efficiency  |  94%",
+          "line_start": 8,
+          "line_end": 8,
+          "reasoning": "Pattern matched on line 8: Efficiency  |  94%"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Efficiency (normalized 94.0); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "mounting",
+      "label": "Mounting",
+      "unit": null,
+      "value": "B3",
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "mounting",
+          "value": "B3",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Mounting  B3",
+          "line_start": 10,
+          "line_end": 10,
+          "reasoning": "Pattern matched on line 10: Mounting  B3"
+        },
+        {
+          "field": "mounting",
+          "value": "B3",
+          "unit": null,
+          "confidence": 0.9,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Mounting  |  B3",
+          "line_start": 9,
+          "line_end": 9,
+          "reasoning": "Pattern matched on line 9: Mounting  |  B3"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Mounting (normalized 'B3'); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "protection_class",
+      "label": "Protection class",
+      "unit": null,
+      "value": "IP55",
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "protection_class",
+          "value": "IP55",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Protection  IP55",
+          "line_start": 11,
+          "line_end": 11,
+          "reasoning": "Pattern matched on line 11: Protection  IP55"
+        },
+        {
+          "field": "protection_class",
+          "value": "IP55",
+          "unit": null,
+          "confidence": 0.9,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Protection  |  IP55",
+          "line_start": 10,
+          "line_end": 10,
+          "reasoning": "Pattern matched on line 10: Protection  |  IP55"
+        },
+        {
+          "field": "protection_class",
+          "value": "IP55",
+          "unit": null,
+          "confidence": 0.7,
+          "method": "ocr_heuristic",
+          "source_id": "src_ocr",
+          "snippet": "IP55",
+          "line_start": 4,
+          "line_end": 4,
+          "reasoning": "Pattern matched on line 4: IP55"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "3 sources agree on Protection class (normalized 'IP55'); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "lubrication",
+      "label": "Lubrication",
+      "unit": null,
+      "value": "oil",
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "lubrication",
+          "value": "oil",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Lubrication  oil",
+          "line_start": 12,
+          "line_end": 12,
+          "reasoning": "Pattern matched on line 12: Lubrication  oil"
+        },
+        {
+          "field": "lubrication",
+          "value": "oil",
+          "unit": null,
+          "confidence": 0.9,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Lubrication  |  oil",
+          "line_start": 11,
+          "line_end": 11,
+          "reasoning": "Pattern matched on line 11: Lubrication  |  oil"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Lubrication (normalized 'oil'); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "weight",
+      "label": "Weight",
+      "unit": "kg",
+      "value": 62,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "weight",
+          "value": "62",
+          "unit": "kg",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Mass  62 kg",
+          "line_start": 13,
+          "line_end": 13,
+          "reasoning": "Pattern matched on line 13: Mass  62 kg"
+        },
+        {
+          "field": "weight",
+          "value": "62",
+          "unit": "kg",
+          "confidence": 0.9,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Weight  |  62 kg",
+          "line_start": 12,
+          "line_end": 12,
+          "reasoning": "Pattern matched on line 12: Weight  |  62 kg"
+        },
+        {
+          "field": "weight",
+          "value": "62",
+          "unit": "kg",
+          "confidence": 0.7,
+          "method": "ocr_heuristic",
+          "source_id": "src_ocr",
+          "snippet": "62 kg",
+          "line_start": 5,
+          "line_end": 5,
+          "reasoning": "Pattern matched on line 5: 62 kg"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "3 sources agree on Weight (normalized 62.0); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    }
+  ],
+  "validation": {
+    "passed": true,
+    "rules_run": 11,
+    "issues": [],
+    "note": "Explicit category rule table (not ML); rules only run on extracted fields."
+  },
+  "needs_review_queue": [
+    {
+      "field": "output_speed",
+      "label": "Output speed",
+      "confidence": 0.4,
+      "flags": [
+        "conflict"
+      ],
+      "reason": "Sources disagree on Output speed: src_pdf=58 rpm; src_web=60 rpm",
+      "value": null,
+      "sources": [
+        "src_pdf",
+        "src_web"
+      ]
+    }
+  ],
+  "marketing": {
+    "description": "",
+    "citations": [],
+    "sentences_skipped": [],
+    "note": "Marketing copy only cites verified fields; needs_review fields are never auto-published."
+  },
+  "summary": {
+    "total_fields_in_schema": 12,
+    "extracted": 12,
+    "omitted_not_found": [],
+    "verified": 11,
+    "needs_review": 1,
+    "conflicts": 1,
+    "rules_run": 11
+  },
+  "ai_review": {
+    "mode": "mock",
+    "provider_note": "deterministic template review (offline)",
+    "reviews": [
+      {
+        "field": "output_speed",
+        "label": "Output speed",
+        "flags": [
+          "conflict"
+        ],
+        "confidence": 0.4,
+        "value": null,
+        "review": "Cross-source conflict on Output speed: Sources disagree on Output speed: src_pdf=58 rpm; src_web=60 rpm. The values disagree beyond the 1% (relative, with a 0.05 absolute floor) agreement tolerance, so neither can be auto-published without human judgment.",
+        "suggested_action": "Check the highest-authority source (Datasheet GRX-225-M (rev 2, p.1) (authority 0.95), Distributor product page - GRX-225-M (authority 0.85)) for a typo or a different operating condition, then record the single correct value."
+      }
+    ],
+    "summary": "Reviewed 1 field(s): 1 conflict(s), 0 low-confidence, 0 validation. None can auto-publish until resolved.",
+    "fields_reviewed": 1,
+    "all_clear": false
+  }
+}

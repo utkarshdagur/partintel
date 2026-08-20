@@ -1,0 +1,836 @@
+{
+  "product_id": "ME-132S-4",
+  "category": "electric_motor",
+  "category_label": "Three-phase induction motor",
+  "pipeline": {
+    "version": "1.0.0",
+    "mode": "mock",
+    "provider_note": "deterministic mock (offline)",
+    "run_at": "2026-08-08T18:53:10+00:00"
+  },
+  "sources": [
+    {
+      "id": "src_pdf",
+      "type": "pdf",
+      "title": "Datasheet ME-132S-4 (IEC 60034, p.1)",
+      "authority": 0.95,
+      "lines": 14,
+      "fields_extracted": 13,
+      "path": "data/sample_motor/motor_datasheet.txt"
+    },
+    {
+      "id": "src_web",
+      "type": "web",
+      "title": "Manufacturer product page - ME-132S-4",
+      "authority": 0.85,
+      "lines": 12,
+      "fields_extracted": 11,
+      "path": "data/sample_motor/motor_webpage.html"
+    },
+    {
+      "id": "src_ocr",
+      "type": "ocr",
+      "title": "Nameplate photo OCR (stamping on terminal box)",
+      "authority": 0.7,
+      "lines": 7,
+      "fields_extracted": 7,
+      "path": "data/sample_motor/motor_photo_ocr.txt"
+    }
+  ],
+  "fields": [
+    {
+      "field": "part_number",
+      "label": "Part number",
+      "unit": null,
+      "value": "ME-132S-4",
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "part_number",
+          "value": "ME-132S-4",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Part no.  ME-132S-4",
+          "line_start": 1,
+          "line_end": 1,
+          "reasoning": "Pattern matched on line 1: Part no.  ME-132S-4"
+        },
+        {
+          "field": "part_number",
+          "value": "ME-132S-4",
+          "unit": null,
+          "confidence": 0.85,
+          "method": "llm_inference",
+          "source_id": "src_web",
+          "snippet": "ME-132S-4 Induction Motor",
+          "line_start": 1,
+          "line_end": 1,
+          "reasoning": "Pattern matched on line 1: ME-132S-4 Induction Motor"
+        },
+        {
+          "field": "part_number",
+          "value": "ME-132S-4",
+          "unit": null,
+          "confidence": 0.7,
+          "method": "ocr_heuristic",
+          "source_id": "src_ocr",
+          "snippet": "ME-132S-4",
+          "line_start": 1,
+          "line_end": 1,
+          "reasoning": "Pattern matched on line 1: ME-132S-4"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "3 sources agree on Part number (normalized 'me-132s-4'); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "brand",
+      "label": "Brand",
+      "unit": null,
+      "value": "VoltTech",
+      "confidence": 0.857,
+      "status": "verified",
+      "flags": [
+        "single_source"
+      ],
+      "sources": [
+        {
+          "field": "brand",
+          "value": "VoltTech",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Brand  VoltTech",
+          "line_start": 2,
+          "line_end": 2,
+          "reasoning": "Pattern matched on line 2: Brand  VoltTech"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "Single source (src_pdf) provides Brand; effective confidence 0.86.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "power_kw",
+      "label": "Rated output power",
+      "unit": "kW",
+      "value": 7.5,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "power_kw",
+          "value": "7.5",
+          "unit": "kW",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Output power  7.5 kW",
+          "line_start": 4,
+          "line_end": 4,
+          "reasoning": "Pattern matched on line 4: Output power  7.5 kW"
+        },
+        {
+          "field": "power_kw",
+          "value": "7.5",
+          "unit": "kW",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Output power  |  7.5 kW",
+          "line_start": 3,
+          "line_end": 3,
+          "reasoning": "Pattern matched on line 3: Output power  |  7.5 kW"
+        },
+        {
+          "field": "power_kw",
+          "value": "7.5",
+          "unit": "kW",
+          "confidence": 0.7,
+          "method": "ocr_heuristic",
+          "source_id": "src_ocr",
+          "snippet": "7.5 kW",
+          "line_start": 2,
+          "line_end": 2,
+          "reasoning": "Pattern matched on line 2: 7.5 kW"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "3 sources agree on Rated output power (normalized 7.5); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "rated_voltage",
+      "label": "Rated voltage",
+      "unit": "V",
+      "value": 400,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "rated_voltage",
+          "value": "400",
+          "unit": "V",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Rated voltage  400 V",
+          "line_start": 5,
+          "line_end": 5,
+          "reasoning": "Pattern matched on line 5: Rated voltage  400 V"
+        },
+        {
+          "field": "rated_voltage",
+          "value": "400",
+          "unit": "V",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Voltage  |  400 V",
+          "line_start": 4,
+          "line_end": 4,
+          "reasoning": "Pattern matched on line 4: Voltage  |  400 V"
+        },
+        {
+          "field": "rated_voltage",
+          "value": "400",
+          "unit": "V",
+          "confidence": 0.7,
+          "method": "ocr_heuristic",
+          "source_id": "src_ocr",
+          "snippet": "400 V",
+          "line_start": 3,
+          "line_end": 3,
+          "reasoning": "Pattern matched on line 3: 400 V"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "3 sources agree on Rated voltage (normalized 400.0); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "rated_current",
+      "label": "Rated current",
+      "unit": "A",
+      "value": 15.2,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "rated_current",
+          "value": "15.2",
+          "unit": "A",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Rated current  15.2 A",
+          "line_start": 6,
+          "line_end": 6,
+          "reasoning": "Pattern matched on line 6: Rated current  15.2 A"
+        },
+        {
+          "field": "rated_current",
+          "value": "15.2",
+          "unit": "A",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Rated current  |  15.2 A",
+          "line_start": 5,
+          "line_end": 5,
+          "reasoning": "Pattern matched on line 5: Rated current  |  15.2 A"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Rated current (normalized 15.2); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "rated_speed",
+      "label": "Rated speed",
+      "unit": "rpm",
+      "value": 1450,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "rated_speed",
+          "value": "1450",
+          "unit": "rpm",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Rated speed  1450 r/min",
+          "line_start": 7,
+          "line_end": 7,
+          "reasoning": "Pattern matched on line 7: Rated speed  1450 r/min"
+        },
+        {
+          "field": "rated_speed",
+          "value": "1450",
+          "unit": "rpm",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Rated speed  |  1450 rpm",
+          "line_start": 6,
+          "line_end": 6,
+          "reasoning": "Pattern matched on line 6: Rated speed  |  1450 rpm"
+        },
+        {
+          "field": "rated_speed",
+          "value": "1450",
+          "unit": "rpm",
+          "confidence": 0.7,
+          "method": "ocr_heuristic",
+          "source_id": "src_ocr",
+          "snippet": "1450 r/min",
+          "line_start": 4,
+          "line_end": 4,
+          "reasoning": "Pattern matched on line 4: 1450 r/min"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "3 sources agree on Rated speed (normalized 1450.0); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "efficiency",
+      "label": "Efficiency",
+      "unit": "%",
+      "value": 90.5,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "efficiency",
+          "value": "90.5",
+          "unit": "%",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Efficiency  90.5 %",
+          "line_start": 9,
+          "line_end": 9,
+          "reasoning": "Pattern matched on line 9: Efficiency  90.5 %"
+        },
+        {
+          "field": "efficiency",
+          "value": "90.5",
+          "unit": "%",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Efficiency  |  90.5%",
+          "line_start": 7,
+          "line_end": 7,
+          "reasoning": "Pattern matched on line 7: Efficiency  |  90.5%"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Efficiency (normalized 90.5); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "frequency",
+      "label": "Frequency",
+      "unit": "Hz",
+      "value": 50,
+      "confidence": 0.857,
+      "status": "verified",
+      "flags": [
+        "single_source"
+      ],
+      "sources": [
+        {
+          "field": "frequency",
+          "value": "50",
+          "unit": "Hz",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Frequency  50 Hz",
+          "line_start": 8,
+          "line_end": 8,
+          "reasoning": "Pattern matched on line 8: Frequency  50 Hz"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "Single source (src_pdf) provides Frequency; effective confidence 0.86.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "frame_size",
+      "label": "Frame size",
+      "unit": null,
+      "value": "132S",
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "frame_size",
+          "value": "132S",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Frame size  132S",
+          "line_start": 10,
+          "line_end": 10,
+          "reasoning": "Pattern matched on line 10: Frame size  132S"
+        },
+        {
+          "field": "frame_size",
+          "value": "132S",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Frame size  |  132S",
+          "line_start": 8,
+          "line_end": 8,
+          "reasoning": "Pattern matched on line 8: Frame size  |  132S"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Frame size (normalized '132S'); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "protection_class",
+      "label": "Protection class",
+      "unit": null,
+      "value": "IP55",
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "protection_class",
+          "value": "IP55",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Protection  IP55",
+          "line_start": 11,
+          "line_end": 11,
+          "reasoning": "Pattern matched on line 11: Protection  IP55"
+        },
+        {
+          "field": "protection_class",
+          "value": "IP55",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Protection  |  IP55",
+          "line_start": 9,
+          "line_end": 9,
+          "reasoning": "Pattern matched on line 9: Protection  |  IP55"
+        },
+        {
+          "field": "protection_class",
+          "value": "IP55",
+          "unit": null,
+          "confidence": 0.7,
+          "method": "ocr_heuristic",
+          "source_id": "src_ocr",
+          "snippet": "IP55",
+          "line_start": 5,
+          "line_end": 5,
+          "reasoning": "Pattern matched on line 5: IP55"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "3 sources agree on Protection class (normalized 'IP55'); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "insulation_class",
+      "label": "Insulation class",
+      "unit": null,
+      "value": "F",
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "insulation_class",
+          "value": "F",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Insulation class  F",
+          "line_start": 12,
+          "line_end": 12,
+          "reasoning": "Pattern matched on line 12: Insulation class  F"
+        },
+        {
+          "field": "insulation_class",
+          "value": "F",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Insulation  |  Class F",
+          "line_start": 10,
+          "line_end": 10,
+          "reasoning": "Pattern matched on line 10: Insulation  |  Class F"
+        },
+        {
+          "field": "insulation_class",
+          "value": "F",
+          "unit": null,
+          "confidence": 0.6,
+          "method": "ocr_heuristic",
+          "source_id": "src_ocr",
+          "snippet": "F",
+          "line_start": 6,
+          "line_end": 6,
+          "reasoning": "Pattern matched on line 6: F"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "3 sources agree on Insulation class (normalized 'F'); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "mounting",
+      "label": "Mounting",
+      "unit": null,
+      "value": "B3",
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "mounting",
+          "value": "B3",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Mounting  B3",
+          "line_start": 13,
+          "line_end": 13,
+          "reasoning": "Pattern matched on line 13: Mounting  B3"
+        },
+        {
+          "field": "mounting",
+          "value": "B3",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Mounting  |  B3",
+          "line_start": 11,
+          "line_end": 11,
+          "reasoning": "Pattern matched on line 11: Mounting  |  B3"
+        },
+        {
+          "field": "mounting",
+          "value": "B3",
+          "unit": null,
+          "confidence": 0.6,
+          "method": "ocr_heuristic",
+          "source_id": "src_ocr",
+          "snippet": "B3",
+          "line_start": 7,
+          "line_end": 7,
+          "reasoning": "Pattern matched on line 7: B3"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "3 sources agree on Mounting (normalized 'B3'); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "weight",
+      "label": "Weight",
+      "unit": "kg",
+      "value": 62,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "weight",
+          "value": "62",
+          "unit": "kg",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_pdf",
+          "snippet": "Mass  62 kg",
+          "line_start": 14,
+          "line_end": 14,
+          "reasoning": "Pattern matched on line 14: Mass  62 kg"
+        },
+        {
+          "field": "weight",
+          "value": "62",
+          "unit": "kg",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Weight  |  62 kg",
+          "line_start": 12,
+          "line_end": 12,
+          "reasoning": "Pattern matched on line 12: Weight  |  62 kg"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Weight (normalized 62.0); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    }
+  ],
+  "validation": {
+    "passed": true,
+    "rules_run": 15,
+    "issues": [],
+    "note": "Explicit category rule table (not ML); rules only run on extracted fields."
+  },
+  "needs_review_queue": [],
+  "marketing": {
+    "description": "The ME-132S-4 is an F-class, IP55 three-phase induction motor rated 7.5 kW at 1450 rpm. It runs on 400 V at 50 Hz, drawing 15.2 A at 90.5% efficiency. The unit weighs 62 kg.",
+    "citations": [
+      {
+        "field": "part_number",
+        "label": "Part number",
+        "value": "ME-132S-4",
+        "sources": [
+          {
+            "source_id": "src_pdf",
+            "snippet": "Part no.  ME-132S-4"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "ME-132S-4 Induction Motor"
+          },
+          {
+            "source_id": "src_ocr",
+            "snippet": "ME-132S-4"
+          }
+        ]
+      },
+      {
+        "field": "insulation_class",
+        "label": "Insulation class",
+        "value": "F",
+        "sources": [
+          {
+            "source_id": "src_pdf",
+            "snippet": "Insulation class  F"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Insulation  |  Class F"
+          },
+          {
+            "source_id": "src_ocr",
+            "snippet": "F"
+          }
+        ]
+      },
+      {
+        "field": "protection_class",
+        "label": "Protection class",
+        "value": "IP55",
+        "sources": [
+          {
+            "source_id": "src_pdf",
+            "snippet": "Protection  IP55"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Protection  |  IP55"
+          },
+          {
+            "source_id": "src_ocr",
+            "snippet": "IP55"
+          }
+        ]
+      },
+      {
+        "field": "power_kw",
+        "label": "Rated output power",
+        "value": "7.5",
+        "sources": [
+          {
+            "source_id": "src_pdf",
+            "snippet": "Output power  7.5 kW"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Output power  |  7.5 kW"
+          },
+          {
+            "source_id": "src_ocr",
+            "snippet": "7.5 kW"
+          }
+        ]
+      },
+      {
+        "field": "rated_speed",
+        "label": "Rated speed",
+        "value": "1450",
+        "sources": [
+          {
+            "source_id": "src_pdf",
+            "snippet": "Rated speed  1450 r/min"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Rated speed  |  1450 rpm"
+          },
+          {
+            "source_id": "src_ocr",
+            "snippet": "1450 r/min"
+          }
+        ]
+      },
+      {
+        "field": "rated_voltage",
+        "label": "Rated voltage",
+        "value": "400",
+        "sources": [
+          {
+            "source_id": "src_pdf",
+            "snippet": "Rated voltage  400 V"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Voltage  |  400 V"
+          },
+          {
+            "source_id": "src_ocr",
+            "snippet": "400 V"
+          }
+        ]
+      },
+      {
+        "field": "frequency",
+        "label": "Frequency",
+        "value": "50",
+        "sources": [
+          {
+            "source_id": "src_pdf",
+            "snippet": "Frequency  50 Hz"
+          }
+        ]
+      },
+      {
+        "field": "rated_current",
+        "label": "Rated current",
+        "value": "15.2",
+        "sources": [
+          {
+            "source_id": "src_pdf",
+            "snippet": "Rated current  15.2 A"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Rated current  |  15.2 A"
+          }
+        ]
+      },
+      {
+        "field": "efficiency",
+        "label": "Efficiency",
+        "value": "90.5",
+        "sources": [
+          {
+            "source_id": "src_pdf",
+            "snippet": "Efficiency  90.5 %"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Efficiency  |  90.5%"
+          }
+        ]
+      },
+      {
+        "field": "weight",
+        "label": "Weight",
+        "value": "62",
+        "sources": [
+          {
+            "source_id": "src_pdf",
+            "snippet": "Mass  62 kg"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Weight  |  62 kg"
+          }
+        ]
+      }
+    ],
+    "sentences_skipped": [],
+    "note": "Marketing copy only cites verified fields; needs_review fields are never auto-published."
+  },
+  "summary": {
+    "total_fields_in_schema": 13,
+    "extracted": 13,
+    "omitted_not_found": [],
+    "verified": 13,
+    "needs_review": 0,
+    "conflicts": 0,
+    "rules_run": 15
+  },
+  "ai_review": {
+    "mode": "mock",
+    "provider_note": "deterministic template review (offline)",
+    "reviews": [],
+    "summary": "No fields were routed to review - every extracted field was verified.",
+    "fields_reviewed": 0,
+    "all_clear": true
+  }
+}

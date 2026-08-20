@@ -1,0 +1,541 @@
+{
+  "product_id": "V2000-BS",
+  "category": "2_way_ball_valve",
+  "category_label": "Two-way ball valve",
+  "pipeline": {
+    "version": "1.0.0",
+    "mode": "mock",
+    "provider_note": "deterministic mock (offline)",
+    "run_at": "2026-08-08T18:53:10+00:00"
+  },
+  "sources": [
+    {
+      "id": "src_datasheet",
+      "type": "pdf",
+      "title": "Datasheet V2000-BS (rev 2, p.1)",
+      "authority": 0.95,
+      "lines": 10,
+      "fields_extracted": 9,
+      "path": "data/sample_valve/v2000_datasheet.txt"
+    },
+    {
+      "id": "src_web",
+      "type": "web",
+      "title": "Manufacturer product page - V2000-BS",
+      "authority": 0.85,
+      "lines": 8,
+      "fields_extracted": 8,
+      "path": "data/sample_valve/v2000_webpage.html"
+    }
+  ],
+  "fields": [
+    {
+      "field": "part_number",
+      "label": "Part number",
+      "unit": null,
+      "value": "V2000-BS",
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "part_number",
+          "value": "V2000-BS",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_datasheet",
+          "snippet": "Part no.   V2000-BS",
+          "line_start": 1,
+          "line_end": 1,
+          "reasoning": "Pattern matched on line 1: Part no.   V2000-BS"
+        },
+        {
+          "field": "part_number",
+          "value": "V2000-BS",
+          "unit": null,
+          "confidence": 0.85,
+          "method": "llm_inference",
+          "source_id": "src_web",
+          "snippet": "V2000-BS Two-Way Ball Valve",
+          "line_start": 1,
+          "line_end": 1,
+          "reasoning": "Pattern matched on line 1: V2000-BS Two-Way Ball Valve"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Part number (normalized 'v2000-bs'); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "brand",
+      "label": "Brand",
+      "unit": null,
+      "value": "AcmeFlow",
+      "confidence": 0.857,
+      "status": "verified",
+      "flags": [
+        "single_source"
+      ],
+      "sources": [
+        {
+          "field": "brand",
+          "value": "AcmeFlow",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_datasheet",
+          "snippet": "Brand   AcmeFlow",
+          "line_start": 2,
+          "line_end": 2,
+          "reasoning": "Pattern matched on line 2: Brand   AcmeFlow"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "Single source (src_datasheet) provides Brand; effective confidence 0.86.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "connection_size",
+      "label": "Connection size (DN)",
+      "unit": "mm",
+      "value": 25,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "connection_size",
+          "value": "25",
+          "unit": "mm",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_datasheet",
+          "snippet": "DN [mm]   25",
+          "line_start": 4,
+          "line_end": 4,
+          "reasoning": "Pattern matched on line 4: DN [mm]   25"
+        },
+        {
+          "field": "connection_size",
+          "value": "25",
+          "unit": "mm",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Connection  |  DN 25 mm",
+          "line_start": 3,
+          "line_end": 3,
+          "reasoning": "Pattern matched on line 3: Connection  |  DN 25 mm"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Connection size (DN) (normalized 25.0); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "pressure_rating",
+      "label": "Pressure rating (PN)",
+      "unit": "bar",
+      "value": 40,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "pressure_rating",
+          "value": "40",
+          "unit": "bar",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_datasheet",
+          "snippet": "Pressure rating   40 bar",
+          "line_start": 5,
+          "line_end": 5,
+          "reasoning": "Pattern matched on line 5: Pressure rating   40 bar"
+        },
+        {
+          "field": "pressure_rating",
+          "value": "40",
+          "unit": "bar",
+          "confidence": 0.9,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Pressure rating  |  PN 40 bar",
+          "line_start": 4,
+          "line_end": 4,
+          "reasoning": "Pattern matched on line 4: Pressure rating  |  PN 40 bar"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Pressure rating (PN) (normalized 40.0); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "body_material",
+      "label": "Body material",
+      "unit": null,
+      "value": "brass",
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "body_material",
+          "value": "brass",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_datasheet",
+          "snippet": "Body material   brass",
+          "line_start": 6,
+          "line_end": 6,
+          "reasoning": "Pattern matched on line 6: Body material   brass"
+        },
+        {
+          "field": "body_material",
+          "value": "brass",
+          "unit": null,
+          "confidence": 0.9,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Body material  |  brass",
+          "line_start": 5,
+          "line_end": 5,
+          "reasoning": "Pattern matched on line 5: Body material  |  brass"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Body material (normalized 'brass'); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "actuation",
+      "label": "Actuation",
+      "unit": null,
+      "value": "manual",
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "actuation",
+          "value": "manual",
+          "unit": null,
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_datasheet",
+          "snippet": "Actuation   manual",
+          "line_start": 8,
+          "line_end": 8,
+          "reasoning": "Pattern matched on line 8: Actuation   manual"
+        },
+        {
+          "field": "actuation",
+          "value": "manual lever",
+          "unit": null,
+          "confidence": 0.9,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Actuation  |  manual lever",
+          "line_start": 6,
+          "line_end": 6,
+          "reasoning": "Pattern matched on line 6: Actuation  |  manual lever"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Actuation (normalized 'manual'); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "temperature_range_min",
+      "label": "Min operating temp",
+      "unit": "°C",
+      "value": -10,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "temperature_range_min",
+          "value": "-10",
+          "unit": "°C",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_datasheet",
+          "snippet": "Operating temperature   -10 °C to 80 °C",
+          "line_start": 9,
+          "line_end": 9,
+          "reasoning": "Pattern matched on line 9: Operating temperature   -10 °C to 80 °C"
+        },
+        {
+          "field": "temperature_range_min",
+          "value": "-10",
+          "unit": "°C",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Operating temperature  |  -10 °C to 80 °C",
+          "line_start": 7,
+          "line_end": 7,
+          "reasoning": "Pattern matched on line 7: Operating temperature  |  -10 °C to 80 °C"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Min operating temp (normalized -10.0); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "temperature_range_max",
+      "label": "Max operating temp",
+      "unit": "°C",
+      "value": 80,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "temperature_range_max",
+          "value": "80",
+          "unit": "°C",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_datasheet",
+          "snippet": "Operating temperature   -10 °C to 80 °C",
+          "line_start": 9,
+          "line_end": 9,
+          "reasoning": "Pattern matched on line 9: Operating temperature   -10 °C to 80 °C"
+        },
+        {
+          "field": "temperature_range_max",
+          "value": "80",
+          "unit": "°C",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Operating temperature  |  -10 °C to 80 °C",
+          "line_start": 7,
+          "line_end": 7,
+          "reasoning": "Pattern matched on line 7: Operating temperature  |  -10 °C to 80 °C"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Max operating temp (normalized 80.0); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    },
+    {
+      "field": "weight",
+      "label": "Weight",
+      "unit": "kg",
+      "value": 0.9,
+      "confidence": 0.98,
+      "status": "verified",
+      "flags": [
+        "multi_source"
+      ],
+      "sources": [
+        {
+          "field": "weight",
+          "value": "0.9",
+          "unit": "kg",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_datasheet",
+          "snippet": "Weight   0.9 kg",
+          "line_start": 10,
+          "line_end": 10,
+          "reasoning": "Pattern matched on line 10: Weight   0.9 kg"
+        },
+        {
+          "field": "weight",
+          "value": "0.9",
+          "unit": "kg",
+          "confidence": 0.95,
+          "method": "table_parse",
+          "source_id": "src_web",
+          "snippet": "Weight  |  0.9 kg",
+          "line_start": 8,
+          "line_end": 8,
+          "reasoning": "Pattern matched on line 8: Weight  |  0.9 kg"
+        }
+      ],
+      "conflicts": [],
+      "reasoning": "2 sources agree on Weight (normalized 0.9); confidence boosted from 0.90 to 0.98.",
+      "dropped": [],
+      "validation_issues": []
+    }
+  ],
+  "validation": {
+    "passed": true,
+    "rules_run": 10,
+    "issues": [],
+    "note": "Explicit category rule table (not ML); rules only run on extracted fields."
+  },
+  "needs_review_queue": [],
+  "marketing": {
+    "description": "The V2000-BS is a brass manual two-way ball valve with a 25 mm connection, rated to 40 bar. Operating temperature range is -10 °C to 80 °C. The unit weighs 0.9 kg.",
+    "citations": [
+      {
+        "field": "part_number",
+        "label": "Part number",
+        "value": "V2000-BS",
+        "sources": [
+          {
+            "source_id": "src_datasheet",
+            "snippet": "Part no.   V2000-BS"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "V2000-BS Two-Way Ball Valve"
+          }
+        ]
+      },
+      {
+        "field": "body_material",
+        "label": "Body material",
+        "value": "brass",
+        "sources": [
+          {
+            "source_id": "src_datasheet",
+            "snippet": "Body material   brass"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Body material  |  brass"
+          }
+        ]
+      },
+      {
+        "field": "actuation",
+        "label": "Actuation",
+        "value": "manual",
+        "sources": [
+          {
+            "source_id": "src_datasheet",
+            "snippet": "Actuation   manual"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Actuation  |  manual lever"
+          }
+        ]
+      },
+      {
+        "field": "connection_size",
+        "label": "Connection size (DN)",
+        "value": "25",
+        "sources": [
+          {
+            "source_id": "src_datasheet",
+            "snippet": "DN [mm]   25"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Connection  |  DN 25 mm"
+          }
+        ]
+      },
+      {
+        "field": "pressure_rating",
+        "label": "Pressure rating (PN)",
+        "value": "40",
+        "sources": [
+          {
+            "source_id": "src_datasheet",
+            "snippet": "Pressure rating   40 bar"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Pressure rating  |  PN 40 bar"
+          }
+        ]
+      },
+      {
+        "field": "temperature_range_min",
+        "label": "Min operating temp",
+        "value": "-10",
+        "sources": [
+          {
+            "source_id": "src_datasheet",
+            "snippet": "Operating temperature   -10 °C to 80 °C"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Operating temperature  |  -10 °C to 80 °C"
+          }
+        ]
+      },
+      {
+        "field": "temperature_range_max",
+        "label": "Max operating temp",
+        "value": "80",
+        "sources": [
+          {
+            "source_id": "src_datasheet",
+            "snippet": "Operating temperature   -10 °C to 80 °C"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Operating temperature  |  -10 °C to 80 °C"
+          }
+        ]
+      },
+      {
+        "field": "weight",
+        "label": "Weight",
+        "value": "0.9",
+        "sources": [
+          {
+            "source_id": "src_datasheet",
+            "snippet": "Weight   0.9 kg"
+          },
+          {
+            "source_id": "src_web",
+            "snippet": "Weight  |  0.9 kg"
+          }
+        ]
+      }
+    ],
+    "sentences_skipped": [],
+    "note": "Marketing copy only cites verified fields; needs_review fields are never auto-published."
+  },
+  "summary": {
+    "total_fields_in_schema": 9,
+    "extracted": 9,
+    "omitted_not_found": [],
+    "verified": 9,
+    "needs_review": 0,
+    "conflicts": 0,
+    "rules_run": 10
+  },
+  "ai_review": {
+    "mode": "mock",
+    "provider_note": "deterministic template review (offline)",
+    "reviews": [],
+    "summary": "No fields were routed to review - every extracted field was verified.",
+    "fields_reviewed": 0,
+    "all_clear": true
+  }
+}

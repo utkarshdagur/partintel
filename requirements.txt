@@ -1,0 +1,21 @@
+# PartIntel — optional runtime dependencies
+#
+# The core pipeline (mock demo, merge, validate, routing, UI) is pure stdlib
+# and needs NO installs:  `python run_demo.py` works offline as-is.
+# The entries below unlock optional capabilities — install with:
+#     pip install -r requirements.txt
+
+# Real PDF datasheets (fallback: provide the PDF as extracted .txt table dump)
+pdfplumber>=0.10,<1.0
+
+# HTML parsing for manufacturer pages (fallback: stdlib tag-stripper)
+beautifulsoup4>=4.12,<5.0
+
+# OCR transcripts of product photos. NOTE: the current code consumes already-
+# extracted OCR text; pytesseract is only needed if you wire up image parsing
+# (also requires the tesseract binary installed).
+pytesseract>=0.3.10
+
+# Real LLM extraction providers (auto-detected when the API key is set)
+anthropic>=0.40
+openai>=1.40

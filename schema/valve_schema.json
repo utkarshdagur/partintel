@@ -1,0 +1,17 @@
+{
+  "category": "2_way_ball_valve",
+  "category_label": "Two-way ball valve",
+  "version": "1.0",
+  "description": "Full-bore two-way ball valves. DN connection size, PN pressure rating, body material, actuation mechanism, operating temperature range, weight.",
+  "fields": [
+    {"name": "part_number", "label": "Part number", "type": "string", "unit": null, "description": "Manufacturer designation, e.g. V2000-BS"},
+    {"name": "brand", "label": "Brand", "type": "string", "unit": null, "description": "Manufacturer brand name"},
+    {"name": "connection_size", "label": "Connection size (DN)", "type": "number", "unit": "mm", "description": "Nominal connection diameter"},
+    {"name": "pressure_rating", "label": "Pressure rating (PN)", "type": "number", "unit": "bar", "description": "Maximum working pressure"},
+    {"name": "body_material", "label": "Body material", "type": "enum", "unit": null, "enum": ["brass", "stainless_steel", "cast_iron", "pvc"], "description": "Valve body material"},
+    {"name": "actuation", "label": "Actuation", "type": "enum", "unit": null, "enum": ["manual", "pneumatic", "electric"], "description": "Actuation mechanism"},
+    {"name": "temperature_range_min", "label": "Min operating temp", "type": "number", "unit": "°C", "description": "Lower bound of operating temperature range"},
+    {"name": "temperature_range_max", "label": "Max operating temp", "type": "number", "unit": "°C", "description": "Upper bound of operating temperature range"},
+    {"name": "weight", "label": "Weight", "type": "number", "unit": "kg", "description": "Valve mass"}
+  ]
+}

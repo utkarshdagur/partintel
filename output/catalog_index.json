@@ -1,0 +1,79 @@
+{
+  "catalog_id": "demo",
+  "name": "PartIntel demo catalog",
+  "pipeline": {
+    "version": "1.0.0",
+    "mode": "mock",
+    "max_workers": 4,
+    "run_at": "2026-08-08T18:50:26+00:00"
+  },
+  "totals": {
+    "products": 4,
+    "ok": 4,
+    "failed": 0,
+    "verified": 46,
+    "needs_review": 3,
+    "conflicts": 2,
+    "rules_run": 48
+  },
+  "products": [
+    {
+      "product_id": "6205-2RS",
+      "category": "deep_groove_ball_bearing",
+      "category_label": "Deep groove ball bearing",
+      "status": "ok",
+      "verified": 13,
+      "needs_review": 2,
+      "conflicts": 1,
+      "rules_run": 12,
+      "extracted": 15,
+      "omitted_not_found": [
+        "material"
+      ],
+      "output": "C:\\Users\\ACER\\product-intel\\output\\6205_product.json",
+      "error": null
+    },
+    {
+      "product_id": "V2000-BS",
+      "category": "2_way_ball_valve",
+      "category_label": "Two-way ball valve",
+      "status": "ok",
+      "verified": 9,
+      "needs_review": 0,
+      "conflicts": 0,
+      "rules_run": 10,
+      "extracted": 9,
+      "omitted_not_found": [],
+      "output": "C:\\Users\\ACER\\product-intel\\output\\valve_product.json",
+      "error": null
+    },
+    {
+      "product_id": "ME-132S-4",
+      "category": "electric_motor",
+      "category_label": "Three-phase induction motor",
+      "status": "ok",
+      "verified": 13,
+      "needs_review": 0,
+      "conflicts": 0,
+      "rules_run": 15,
+      "extracted": 13,
+      "omitted_not_found": [],
+      "output": "C:\\Users\\ACER\\product-intel\\output\\motor_product.json",
+      "error": null
+    },
+    {
+      "product_id": "GRX-225-M",
+      "category": "helical_gear_reducer",
+      "category_label": "Helical gear reducer",
+      "status": "ok",
+      "verified": 11,
+      "needs_review": 1,
+      "conflicts": 1,
+      "rules_run": 11,
+      "extracted": 12,
+      "omitted_not_found": [],
+      "output": "C:\\Users\\ACER\\product-intel\\output\\gearbox_product.json",
+      "error": null
+    }
+  ]
+}

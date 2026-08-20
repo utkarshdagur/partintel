@@ -1,0 +1,20 @@
+{
+  "product_id": "V2000-BS",
+  "category": "2_way_ball_valve",
+  "sources": [
+    {
+      "id": "src_datasheet",
+      "type": "pdf",
+      "title": "Datasheet V2000-BS (rev 2, p.1)",
+      "path": "data/sample_valve/v2000_datasheet.txt",
+      "authority": 0.95
+    },
+    {
+      "id": "src_web",
+      "type": "web",
+      "title": "Manufacturer product page - V2000-BS",
+      "path": "data/sample_valve/v2000_webpage.html",
+      "authority": 0.85
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "category": "helical_gear_reducer",
+  "category_label": "Helical gear reducer",
+  "version": "1.0",
+  "description": "Helical gear reducers / gearboxes (IEC frame). Gear ratio, input/output speed, rated torque (N·m or ft·lb), service factor, efficiency, mounting, protection class, lubrication, weight.",
+  "fields": [
+    {"name": "part_number", "label": "Part number", "type": "string", "unit": null, "description": "Manufacturer designation, e.g. GRX-225-M"},
+    {"name": "brand", "label": "Brand", "type": "string", "unit": null, "description": "Manufacturer brand name"},
+    {"name": "ratio", "label": "Gear ratio", "type": "number", "unit": null, "description": "Reduction ratio, e.g. 25 (25:1)"},
+    {"name": "input_speed", "label": "Input speed", "type": "number", "unit": "rpm", "description": "Max rated input rotational speed"},
+    {"name": "output_speed", "label": "Output speed", "type": "number", "unit": "rpm", "description": "Rated output rotational speed"},
+    {"name": "rated_torque", "label": "Rated torque", "type": "number", "unit": "Nm", "description": "Rated output torque (N·m; ft·lb sources are converted)"},
+    {"name": "service_factor", "label": "Service factor", "type": "number", "unit": null, "description": "Application service factor"},
+    {"name": "efficiency", "label": "Efficiency", "type": "number", "unit": "%", "description": "Gearbox efficiency"},
+    {"name": "mounting", "label": "Mounting", "type": "enum", "unit": null, "enum": ["B3", "B5", "B14", "V1", "V6"], "description": "Mounting arrangement"},
+    {"name": "protection_class", "label": "Protection class", "type": "enum", "unit": null, "enum": ["IP44", "IP55", "IP56", "IP65", "IP66"], "description": "Ingress protection rating"},
+    {"name": "lubrication", "label": "Lubrication", "type": "enum", "unit": null, "enum": ["oil", "grease"], "description": "Lubricant type"},
+    {"name": "weight", "label": "Weight", "type": "number", "unit": "kg", "description": "Gearbox mass"}
+  ]
+}

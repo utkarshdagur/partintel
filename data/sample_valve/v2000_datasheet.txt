@@ -1,0 +1,10 @@
+Part no.   V2000-BS
+Brand   AcmeFlow
+Type   Two-way ball valve, full bore
+DN [mm]   25
+Pressure rating   40 bar
+Body material   brass
+Seat material   PTFE
+Actuation   manual
+Operating temperature   -10 °C to 80 °C
+Weight   0.9 kg
