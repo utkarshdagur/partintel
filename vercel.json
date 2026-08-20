@@ -1,9 +1,7 @@
 {
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.py" },
+    { "source": "/", "destination": "/ui/index.html" },
     { "source": "/(.*)", "destination": "/ui/$1" }
-  ],
-  "redirects": [
-    { "source": "/", "destination": "/index.html", "permanent": true }
   ]
 }
