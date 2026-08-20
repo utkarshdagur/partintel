@@ -1,0 +1,2071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PartIntel · AI Product-Intelligence Console</title>
+<style>
+:root{
+  --bg:#0a0e13; --bg2:#0e141b; --panel:#111722; --panel2:#161d29; --panel3:#1b2433;
+  --line:#1f2937; --line2:#273449;
+  --tx:#e5edf5; --tx2:#94a3b8; --tx3:#64748b;
+  --ok:#34d399; --okbg:rgba(52,211,153,.12);
+  --warn:#fbbf24; --warnbg:rgba(251,191,36,.12);
+  --bad:#f87171; --badbg:rgba(248,113,113,.12);
+  --acc:#38bdf8; --accbg:rgba(56,189,248,.12);
+  --mono:"Cascadia Code","JetBrains Mono",Consolas,Menlo,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif;
+  --grad-start:#12202f;
+  --topbg:rgba(10,14,19,.85);
+  --hitlbg:#0d1520;
+  --auditbg:rgba(52,211,153,.08);
+  --tabbg:rgba(14,20,27,.7);
+}
+:root[data-theme="light"]{
+  --bg:#f8fafc; --bg2:#f1f5f9; --panel:#ffffff; --panel2:#f8fafc; --panel3:#e2e8f0;
+  --line:#e2e8f0; --line2:#cbd5e1;
+  --tx:#0f172a; --tx2:#475569; --tx3:#64748b;
+  --ok:#059669; --okbg:rgba(16,185,129,.12);
+  --warn:#d97706; --warnbg:rgba(245,158,11,.12);
+  --bad:#dc2626; --badbg:rgba(239,68,68,.12);
+  --acc:#0284c7; --accbg:rgba(2,132,199,.12);
+  --grad-start:#e0f2fe;
+  --topbg:rgba(255,255,255,.85);
+  --hitlbg:#ffffff;
+  --auditbg:rgba(16,185,129,.08);
+  --tabbg:rgba(241,245,249,.8);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:radial-gradient(1200px 600px at 80% -10%,var(--grad-start) 0%,var(--bg) 55%);
+  color:var(--tx);font:14px/1.5 var(--sans);overflow-x:hidden}
+::selection{background:rgba(56,189,248,.3)}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#243044;border-radius:6px}
+::-webkit-scrollbar-track{background:transparent}
+button{font:inherit;cursor:pointer}
+
+/* top bar */
+.topbar{display:flex;flex-direction:column;gap:16px;padding:18px 32px;
+  border-bottom:1px solid var(--line);background:var(--topbg);backdrop-filter:blur(12px);
+  position:sticky;top:0;z-index:40;box-shadow:0 4px 30px rgba(0,0,0,.5)}
+.topbar-row{display:flex;align-items:center;justify-content:space-between;width:100%}
+.topbar-row.context{justify-content:flex-start;gap:32px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.5px;font-size:16px}
+.brand .logo{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;
+  background:linear-gradient(135deg,#0ea5e9,#6366f1);color:#fff;font-size:16px;
+  box-shadow:0 0 20px rgba(14,165,233,.5)}
+.brand b{color:var(--acc)}.brand .sub{color:var(--tx3);font-weight:500;font-size:13px;letter-spacing:.4px}
+.prod h1{font-size:24px;letter-spacing:.5px;margin-bottom:2px}
+.prod .cat{color:var(--tx2);font-size:12px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600}
+.stats{display:flex;gap:12px}
+.stat{min-width:85px;padding:8px 14px;border-radius:12px;border:1px solid var(--line);
+  background:var(--panel);text-align:center;transition:transform .15s,border-color .15s}
+.stat:hover{transform:translateY(-1px);border-color:var(--line2)}
+.stat b{display:block;font-size:20px;font-variant-numeric:tabular-nums;line-height:1.2}
+.stat span{font-size:10.5px;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px;font-weight:600}
+.stat.ok b{color:var(--ok)}.stat.warn b{color:var(--warn)}
+.stat.bad b{color:var(--bad)}.stat.neutral b{color:var(--tx2)}
+.pipe{font-size:12px;color:var(--tx3);text-align:right;line-height:1.6;margin-left:auto}
+.pipe b{color:var(--acc);font-weight:700}
+.pipe .okv{color:var(--ok)}
+.head-actions{display:flex;align-items:center;gap:12px}
+.confbtn{background:var(--panel);border:1px solid var(--line);color:var(--acc);border-radius:8px;
+  padding:7px 14px;font-size:12px;font-weight:700;transition:all .15s}
+.confbtn:hover{border-color:var(--acc);background:var(--accbg)}
+
+/* tabs */
+.tabs{display:flex;align-items:center;gap:4px;padding:0 26px;border-bottom:1px solid var(--line);
+  background:var(--tabbg);position:sticky;top:77px;z-index:30}
+.tab{background:none;border:none;color:var(--tx2);padding:13px 16px;font-weight:600;font-size:13px;
+  position:relative;transition:color .15s}
+.tab:hover{color:var(--tx)}
+.tab.active{color:var(--tx)}
+.tab.active::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:2px;
+  background:var(--acc);border-radius:2px;box-shadow:0 0 10px rgba(56,189,248,.6)}
+.pill{display:inline-block;min-width:18px;padding:0 6px;margin-left:6px;border-radius:99px;
+  font-size:11px;font-weight:700;vertical-align:1px}
+.pill.warn{background:var(--warnbg);color:var(--warn);border:1px solid rgba(251,191,36,.35)}
+.pill.bad{background:var(--badbg);color:var(--bad);border:1px solid rgba(248,113,113,.35)}
+.tabs .spacer{flex:1}
+.legend{display:flex;gap:8px;font-size:11px;color:var(--tx3)}
+.lg{display:inline-flex;align-items:center;gap:5px}
+.lg::before{content:"";width:9px;height:9px;border-radius:3px}
+.lg.ok::before{background:var(--ok)}.lg.mid::before{background:var(--warn)}
+.lg.bad::before{background:var(--bad)}
+#search{margin:7px 0 7px 14px;background:var(--bg2);border:1px solid var(--line);border-radius:8px;
+  color:var(--tx);padding:7px 12px;width:200px;font-size:12.5px;outline:none;transition:border-color .15s}
+#search:focus{border-color:var(--acc)}
+
+/* layout */
+main{padding:22px 26px 60px;max-width:1280px;margin:0 auto}
+.tabpane{display:none}
+.tabpane.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* filters */
+.filters{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.chip{background:var(--panel);border:1px solid var(--line);color:var(--tx2);border-radius:99px;
+  padding:5px 13px;font-size:12px;font-weight:600;transition:all .15s}
+.chip:hover{border-color:var(--line2);color:var(--tx)}
+.chip.on{background:var(--accbg);border-color:rgba(56,189,248,.5);color:var(--acc)}
+.chip .n{opacity:.65;font-weight:500;margin-left:5px}
+.chip.dot::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px;vertical-align:1px}
+.chip.dot.all::before{background:#64748b}
+.chip.dot.ok::before{background:var(--ok)}
+.chip.dot.warn::before{background:var(--warn)}
+.chip.dot.bad::before{background:var(--bad)}
+.filters .sep{flex:1}
+.hint{font-size:11.5px;color:var(--tx3)}
+
+/* table */
+.tblwrap{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel);
+  box-shadow:0 10px 30px rgba(0,0,0,.25)}
+table{width:100%;border-collapse:collapse}
+th{font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:var(--tx3);font-weight:700;
+  text-align:left;padding:11px 16px;border-bottom:1px solid var(--line);background:var(--bg2)}
+td{padding:11px 16px;border-bottom:1px solid rgba(31,41,55,.55);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr{cursor:pointer;transition:background .12s}
+tbody tr:hover{background:rgba(56,189,248,.05)}
+tbody tr.open{background:rgba(56,189,248,.08)}
+.fname{font-weight:600;color:var(--tx)}
+.fdesc{font-size:11px;color:var(--tx3);margin-top:2px}
+.fvalue{font-family:var(--mono);font-size:13.5px;font-weight:600}
+.fvalue .unit{color:var(--tx3);font-weight:400;font-size:12px;margin-left:3px}
+.fvalue.conflict{color:var(--bad)}
+.fvalue .vs{color:var(--tx3);font-weight:400;margin:0 3px}
+.confcell{min-width:150px}
+.confbar{height:6px;border-radius:3px;background:#1c2634;overflow:hidden;margin-bottom:5px}
+.confbar i{display:block;height:100%;border-radius:3px;transition:width .5s ease}
+.confpct{font-family:var(--mono);font-size:11.5px;color:var(--tx2)}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:6px}
+.badge.ok{background:var(--okbg);color:var(--ok)}
+.badge.warn{background:var(--warnbg);color:var(--warn)}
+.badge.bad{background:var(--badbg);color:var(--bad)}
+.method{font-family:var(--mono);font-size:10.5px;color:var(--tx2);background:var(--bg2);
+  border:1px solid var(--line);border-radius:5px;padding:2px 7px}
+.srcchips{display:flex;gap:4px;flex-wrap:wrap}
+.schip{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;
+  color:var(--tx2);border:1px solid var(--line);border-radius:6px;padding:2px 8px;background:var(--bg2)}
+.schip.pdf{border-color:rgba(248,113,113,.4);color:#fca5a5}
+.schip.web{border-color:rgba(56,189,248,.4);color:var(--acc)}
+.schip.ocr{border-color:rgba(251,191,36,.4);color:var(--warn)}
+.flags{display:inline-flex;gap:4px;margin-left:8px}
+.flag{font-size:9.5px;padding:1px 6px;border-radius:4px;background:var(--panel3);color:var(--tx3)}
+.flag.conflict{background:var(--badbg);color:var(--bad)}
+.flag.low_confidence{background:var(--warnbg);color:var(--warn)}
+.flag.single_source{background:var(--panel3);color:var(--tx2)}
+.empty{padding:34px;text-align:center;color:var(--tx3)}
+
+/* field detail panel */
+.backdrop{position:fixed;inset:0;background:rgba(4,7,11,.6);backdrop-filter:blur(3px);z-index:50;
+  opacity:0;pointer-events:none;transition:opacity .2s}
+.backdrop.show{opacity:1;pointer-events:auto}
+.panel{position:fixed;top:0;right:0;bottom:0;width:min(560px,94vw);background:var(--panel);
+  border-left:1px solid var(--line2);z-index:60;transform:translateX(105%);
+  transition:transform .28s cubic-bezier(.2,.8,.25,1);display:flex;flex-direction:column;
+  box-shadow:-20px 0 50px rgba(0,0,0,.4)}
+.panel.show{transform:none}
+.phead{padding:18px 22px;border-bottom:1px solid var(--line);background:var(--bg2)}
+.phead .ptitle{display:flex;align-items:center;gap:10px}
+.phead h2{font-size:16.5px}
+.pclose{margin-left:auto;background:none;border:none;color:var(--tx3);font-size:20px;line-height:1;
+  width:30px;height:30px;border-radius:8px;transition:all .15s}
+.pclose:hover{background:var(--panel3);color:var(--tx)}
+.pval{font-family:var(--mono);font-size:22px;font-weight:700;margin-top:8px}
+.pval .unit{color:var(--tx3);font-size:14px;font-weight:400;margin-left:5px}
+.pconf{display:flex;align-items:center;gap:10px;margin-top:10px}
+.pconf .confbar{flex:1;height:8px;margin:0}
+.pscroll{flex:1;overflow-y:auto;padding:18px 22px;display:flex;flex-direction:column;gap:14px}
+.psec h3{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--tx3);margin-bottom:8px}
+.reason{font-size:12.5px;color:var(--tx2);background:var(--bg2);border:1px solid var(--line);
+  border-left:3px solid var(--acc);border-radius:8px;padding:10px 12px}
+.confbanner{display:flex;gap:10px;background:var(--badbg);border:1px solid rgba(248,113,113,.4);
+  border-radius:10px;padding:12px;font-size:12.5px;color:#fecaca}
+.confbanner b{color:var(--bad)}
+.src-card{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--bg2)}
+.src-card .shead{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--panel)}
+.src-card .shead .stitle{font-weight:600;font-size:12.5px}
+.src-card .shead .smethod{margin-left:auto}
+.sbody{padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.srow{display:flex;justify-content:space-between;gap:10px;font-size:12px}
+.srow .k{color:var(--tx3)}
+.srow .v{font-family:var(--mono);font-weight:600}
+.snippet{font-family:var(--mono);font-size:11.5px;background:#0c1219;border:1px solid var(--line);
+  border-radius:8px;padding:9px 11px;color:#9fd6ff;position:relative}
+.snippet .loc{position:absolute;top:6px;right:8px;font-size:9.5px;color:var(--tx3);letter-spacing:.5px}
+.sreason{font-size:11.5px;color:var(--tx2)}
+.issue{display:flex;gap:8px;font-size:12px;background:var(--warnbg);border:1px solid rgba(251,191,36,.35);
+  border-radius:8px;padding:9px 11px;color:#fde68a}
+.issue.err{background:var(--badbg);border-color:rgba(248,113,113,.4);color:#fecaca}
+.src-card.dropped{opacity:.55}
+.dropnote{font-size:11.5px;color:var(--tx3);margin-top:6px}
+
+/* confidence-model explainer modal */
+.confmodal{position:fixed;inset:0;background:rgba(4,7,11,.7);backdrop-filter:blur(3px);z-index:80;
+  display:none;place-items:center;padding:20px}
+.confmodal.show{display:grid}
+.confcard{background:var(--panel);border:1px solid var(--line2);border-radius:14px;max-width:560px;width:100%;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);animation:fade .2s ease}
+.confhead{display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line);background:var(--bg2)}
+.confhead h3{font-size:15px}
+.confbody{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.cfstep{font-size:12.5px;color:var(--tx2);border-left:3px solid var(--acc);background:var(--bg2);
+  border-radius:0 8px 8px 0;padding:9px 12px}
+.cfstep b{display:block;color:var(--tx);font-size:11px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px}
+.cfnote{font-size:11.5px;color:var(--tx3);font-style:italic}
+
+/* review queue */
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px}
+.qcard{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:16px;
+  transition:transform .15s,border-color .15s}
+.qcard:hover{transform:translateY(-2px);border-color:var(--line2)}
+.qcard .qtop{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.qcard h3{font-size:14px}
+.qcard .qreason{font-size:12.5px;color:var(--tx2);background:var(--bg2);border-radius:8px;
+  padding:9px 11px;margin:8px 0 12px}
+.qcard .qmeta{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--tx3)}
+.qactions{margin-left:auto;display:flex;gap:8px}
+.qbtn{border-radius:8px;padding:6px 13px;font-size:12px;font-weight:700;border:1px solid var(--line);
+  background:var(--panel3);color:var(--tx);transition:all .15s}
+.qbtn:hover{border-color:var(--acc);color:var(--acc)}
+.qbtn.done{background:var(--okbg);border-color:rgba(52,211,153,.5);color:var(--ok)}
+.qcard.resolved{opacity:.45;order:99}
+.qcard.resolved .qtop h3::after{content:"  ✓ resolved";color:var(--ok);font-size:11px;font-weight:600}
+
+/* AI review note in queue cards */
+.qreason.ai{border-left:3px solid var(--acc);background:rgba(56,189,248,.06)}
+.qreason.ai b{display:block;color:var(--acc);font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}
+.qreason.ai i{color:var(--tx3);font-style:normal;font-size:11.5px}
+
+/* catalog overview tab */
+.cathero{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.cathero .stat{min-width:104px;padding:8px 14px}
+.catnote{font-size:11.5px;color:var(--tx3);margin-bottom:14px}
+
+/* marketing */
+.mkt{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:26px 30px;
+  max-width:900px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.mkt h2{font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--tx3);margin-bottom:14px}
+.mkt p{font-size:17px;line-height:1.75;color:var(--tx)}
+.mkt cite{display:inline;background:var(--accbg);border:1px solid rgba(56,189,248,.4);
+  border-radius:6px;padding:1px 7px;font-style:normal;font-weight:600;color:var(--acc);
+  cursor:pointer;transition:all .15s;font-size:15px}
+.mkt cite:hover{background:rgba(56,189,248,.22);box-shadow:0 0 12px rgba(56,189,248,.3)}
+.mkt .mnote{margin-top:16px;font-size:12px;color:var(--tx3)}
+.cit{width:100%;margin-top:24px;border-collapse:collapse}
+.cit th{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--tx3);text-align:left;
+  padding:8px 12px;border-bottom:1px solid var(--line)}
+.cit td{padding:8px 12px;border-bottom:1px solid rgba(31,41,55,.4);font-size:12.5px}
+.cit tr{cursor:pointer}
+.cit tr:hover td{background:rgba(56,189,248,.05)}
+.cit .cfield{font-weight:600}
+.cit .csrc{font-family:var(--mono);font-size:11px;color:var(--tx2)}
+.skip{display:flex;gap:10px;align-items:flex-start;margin-top:18px;background:var(--warnbg);
+  border:1px solid rgba(251,191,36,.35);border-radius:10px;padding:12px 14px;font-size:12.5px;color:#fde68a}
+
+/* sources */
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.scard{border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:hidden}
+.scard .sc-top{padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line)}
+.scard .sc-ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;
+  font-weight:800;font-size:11px;letter-spacing:.5px}
+.sc-ic.pdf{background:var(--badbg);color:var(--bad)}
+.sc-ic.web{background:var(--accbg);color:var(--acc)}
+.sc-ic.ocr{background:var(--warnbg);color:var(--warn)}
+.scard .sc-title{font-weight:600;font-size:13px}
+.scard .sc-sub{font-size:11px;color:var(--tx3);margin-top:2px}
+.sc-body{padding:12px 16px;font-size:12px;color:var(--tx2);display:flex;flex-direction:column;gap:8px}
+.sc-body .row{display:flex;justify-content:space-between}
+.sc-body .k{color:var(--tx3)}
+.sc-body .v{font-family:var(--mono);font-weight:600;color:var(--tx)}
+.sc-fields{display:flex;flex-wrap:wrap;gap:5px;padding:0 16px 14px}
+.sf{font-size:10.5px;font-family:var(--mono);background:var(--bg2);border:1px solid var(--line);
+  border-radius:5px;padding:2px 7px;color:var(--tx2)}
+
+/* export actions & HITL styling */
+.head-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+.exportbtn{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .18s;border:1px solid var(--line2);background:var(--panel2);color:var(--tx)}
+.exportbtn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.exportbtn.json{background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.4);color:var(--acc)}
+.exportbtn.json:hover{background:rgba(56,189,248,.22)}
+.exportbtn.csv{background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.4);color:var(--ok)}
+.exportbtn.csv:hover{background:rgba(52,211,153,.22)}
+.exportbtn.reset{color:var(--tx3)}
+.exportbtn.reset:hover{color:var(--bad);border-color:rgba(248,113,113,.4)}
+.exportbtn.ingest{background:linear-gradient(135deg,#0ea5e9,#6366f1);border:none;color:#fff;
+  box-shadow:0 2px 12px rgba(14,165,233,.4)}
+.exportbtn.ingest:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(14,165,233,.55)}
+
+/* live ingestion modal */
+.ingestcard{background:var(--panel);border:1px solid var(--line2);border-radius:16px;
+  width:min(880px,96vw);max-height:92vh;display:flex;flex-direction:column;
+  box-shadow:0 24px 70px rgba(0,0,0,.55);animation:fade .2s ease;overflow:hidden}
+.ingestbody{padding:18px 22px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+.ingest-subhead{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--tx3);font-weight:700}
+.ingest-row{display:flex;gap:12px;flex-wrap:wrap}
+.ingest-field{display:flex;flex-direction:column;gap:5px;min-width:210px;flex:1}
+.ingest-lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--tx3);font-weight:700}
+.ingest-select,.ingest-input{background:var(--bg2);border:1px solid var(--line2);border-radius:8px;
+  color:var(--tx);padding:8px 11px;font-size:13px;font-family:inherit;outline:none;transition:border-color .15s}
+.ingest-select option{background:var(--panel2);color:var(--tx)}
+.ingest-select:focus,.ingest-input:focus{border-color:var(--acc);box-shadow:0 0 8px rgba(56,189,248,.25)}
+.ingest-fields-preview{display:flex;flex-wrap:wrap;gap:5px;background:var(--bg2);border:1px solid var(--line);
+  border-radius:10px;padding:9px 11px}
+#ingestSources{display:flex;flex-direction:column;gap:10px}
+.ingest-src{border:1px solid var(--line);border-radius:12px;background:var(--bg2);padding:12px 14px 12px 14px;
+  display:flex;flex-direction:column;gap:8px;position:relative;transition:border-color .15s}
+.ingest-src:hover{border-color:var(--line2)}
+.ingest-src-top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding-right:26px}
+.ingest-stype{background:var(--panel3);border:1px solid var(--line2);color:var(--tx);border-radius:8px;
+  padding:7px 10px;font-size:12.5px;font-family:inherit}
+.ingest-stitle{flex:1;min-width:180px;background:var(--panel);border:1px solid var(--line);
+  border-radius:8px;color:var(--tx);padding:7px 11px;font-size:12.5px;font-family:inherit;outline:none}
+.ingest-stitle:focus{border-color:var(--acc)}
+.ingest-auth{font-size:11px;color:var(--tx3);font-family:var(--mono);white-space:nowrap}
+.ingest-auth b{color:var(--acc)}
+.ingest-srm{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--tx3);
+  font-size:17px;width:26px;height:26px;border-radius:7px;line-height:1;cursor:pointer}
+.ingest-srm:hover{background:var(--badbg);color:var(--bad)}
+.ingest-stext{background:var(--panel);border:1px solid var(--line);border-radius:8px;color:var(--tx);
+  padding:9px 11px;font-size:12px;font-family:var(--mono);min-height:96px;resize:vertical;outline:none;line-height:1.55}
+.ingest-stext:focus{border-color:var(--acc)}
+.ingest-stext::placeholder{color:var(--tx3)}
+/* file upload (per source row) */
+.ingest-upload{background:rgba(56,189,248,.1);border:1px dashed rgba(56,189,248,.45);color:var(--acc);
+  border-radius:8px;padding:6px 11px;font-size:12px;cursor:pointer;transition:all .15s;font-family:inherit;white-space:nowrap}
+.ingest-upload:hover{background:rgba(56,189,248,.22);border-style:solid}
+.ingest-file{display:none}
+.ingest-fname{font-size:11px;color:var(--ok);font-family:var(--mono);white-space:nowrap;max-width:200px;
+  overflow:hidden;text-overflow:ellipsis}
+.ingest-src.drag{border-color:var(--acc);box-shadow:0 0 0 2px rgba(56,189,248,.3)}
+/* unit conversions tab */
+.conv-cell{font-family:var(--mono);font-size:12.5px}
+.conv-orig{color:var(--tx3);text-decoration:line-through;text-decoration-color:rgba(248,113,113,.55);text-decoration-thickness:1px}
+.conv-norm{color:var(--ok);font-weight:700}
+.conv-arrow{color:var(--acc);font-weight:700;padding:0 4px;font-size:15px}
+td.conv-src{font-size:11px;color:var(--tx3);white-space:nowrap}
+.conv-src b{color:var(--acc);font-weight:600}
+.ingest-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ingest-run{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.ingest-status{font-size:12px;color:var(--tx2);line-height:1.5}
+.ingest-status.warn{color:var(--warn)}
+.ingest-status.err{color:var(--bad)}
+.ingest-status.ok{color:var(--ok)}
+.toast{position:fixed;right:22px;bottom:22px;background:var(--panel2);border:1px solid rgba(52,211,153,.45);
+  border-left:4px solid var(--ok);border-radius:12px;padding:12px 16px;font-size:13px;color:var(--tx);
+  box-shadow:0 12px 40px rgba(0,0,0,.5);z-index:100;display:flex;gap:12px;align-items:flex-start;
+  max-width:440px;opacity:0;transform:translateY(12px);pointer-events:none;transition:all .3s ease}
+.toast.show{opacity:1;transform:none;pointer-events:auto}
+.toast .tt{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--tx3);margin-bottom:3px}
+.toast b{color:var(--ok)}
+.toast button{background:var(--okbg);border:1px solid rgba(52,211,153,.5);color:var(--ok);border-radius:7px;
+  padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;margin-left:auto;flex:none}
+.toast button:hover{background:rgba(52,211,153,.2)}
+.ingest-progress{display:flex;flex-direction:column;gap:6px;background:var(--bg2);border:1px solid var(--line);
+  border-radius:10px;padding:12px 14px}
+/* ingestion studio result panel */
+.ingest-result{display:flex;flex-direction:column;gap:10px;border:1px solid rgba(52,211,153,.35);
+  border-left:4px solid var(--ok);border-radius:12px;background:var(--bg2);padding:14px 16px;animation:fade .25s ease}
+.ingest-stats{display:flex;gap:8px;flex-wrap:wrap}
+.ingest-stat{flex:1;min-width:110px;background:var(--panel2);border:1px solid var(--line2);border-radius:10px;
+  padding:8px 12px;text-align:center}
+.ingest-stat b{display:block;font-size:20px;line-height:1.2}
+.ingest-stat span{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--tx3);font-weight:700}
+.ingest-stat.ok b{color:var(--ok)}.ingest-stat.warn b{color:var(--warn)}.ingest-stat.bad b{color:var(--bad)}
+.ingest-result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:700px){.ingest-result-grid{grid-template-columns:1fr}}
+.ingest-rpanel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12px}
+.ingest-rpanel .rp-title{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--tx3);font-weight:700;margin-bottom:6px}
+.ingest-rpanel ul{margin:0;padding-left:16px;color:var(--tx2);line-height:1.7}
+.ingest-rpanel .mkt-line{color:var(--tx2);line-height:1.6;font-style:italic}
+.ingest-rpanel .cv{font-family:var(--mono);font-size:12px}
+.ingest-rpanel .cv b{color:var(--ok)}
+.ingest-rpanel .cv .arr{color:var(--acc);font-weight:700}
+.ingest-result-actions{display:flex;gap:8px;flex-wrap:wrap}
+/* enterprise persona switcher */
+.persona{display:inline-flex;align-items:center;gap:7px;background:var(--panel2);border:1px solid var(--line2);
+  border-radius:8px;padding:5px 10px 5px 8px;transition:border-color .15s}
+.persona:hover{border-color:var(--acc)}
+.persona-ic{font-size:15px;line-height:1}
+.persona-sel{background:transparent;border:none;color:var(--tx);font-size:12px;font-weight:700;
+  font-family:inherit;outline:none;cursor:pointer}
+.persona-sel option{background:var(--panel2);color:var(--tx)}
+.pers-tag{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:20px;background:rgba(99,102,241,.14);
+  border:1px solid rgba(99,102,241,.4);color:#a5b4fc;font-size:10px;font-weight:700;vertical-align:1px}
+.istage{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--tx3);font-family:var(--mono)}
+.istage::before{content:"";width:14px;height:14px;border-radius:50%;border:2px solid var(--line2);flex:none}
+.istage.done{color:var(--tx2)}
+.istage.done::before{content:"✓";border-color:var(--ok);color:var(--ok);background:var(--okbg);
+  display:grid;place-items:center;font-size:10px;font-weight:800}
+.istage.active{color:var(--acc)}
+.istage.active::before{border-color:var(--acc);border-top-color:transparent;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* HITL Interactive Resolution Box */
+.hitl-box{margin-top:12px;background:var(--hitlbg);border:1px solid rgba(56,189,248,.25);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.hitl-title{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--acc);display:flex;align-items:center;gap:6px}
+.cand-list{display:flex;flex-direction:column;gap:6px}
+.cand-opt{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;background:var(--bg2);border:1px solid var(--line);cursor:pointer;transition:all .15s}
+.cand-opt:hover{border-color:rgba(56,189,248,.5);background:rgba(56,189,248,.05)}
+.cand-opt.selected{border-color:var(--ok);background:rgba(52,211,153,.08);box-shadow:0 0 10px rgba(52,211,153,.15)}
+.cand-opt input[type="radio"]{accent-color:var(--ok);cursor:pointer}
+.cand-val{font-family:var(--mono);font-weight:700;font-size:13px;color:var(--tx)}
+.cand-unit{color:var(--tx3);font-size:11px;margin-left:3px}
+.cand-src{margin-left:auto;font-size:11px;color:var(--tx2);display:flex;align-items:center;gap:6px}
+.hitl-input-row{display:flex;gap:8px;align-items:center}
+.hitl-input{flex:1;background:var(--bg2);border:1px solid var(--line2);border-radius:6px;padding:6px 10px;font-size:12px;color:var(--tx);font-family:inherit}
+.hitl-input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 8px rgba(56,189,248,.25)}
+.hitl-btn-resolve{padding:7px 15px;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;border:none;background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 2px 10px rgba(16,185,129,.35);transition:all .15s}
+.hitl-btn-resolve:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(16,185,129,.5)}
+.audit-badge{display:flex;align-items:center;justify-content:space-between;background:var(--auditbg);border:1px solid rgba(52,211,153,.3);border-radius:8px;padding:8px 12px;font-size:11.5px;color:var(--ok)}
+.audit-badge .undo-btn{background:none;border:none;color:var(--tx3);cursor:pointer;text-decoration:underline;font-size:11px}
+.audit-badge .undo-btn:hover{color:var(--bad)}
+
+/* footer / dropzone / responsive */
+footer{padding:16px 26px 26px;color:var(--tx3);font-size:11.5px;border-top:1px solid var(--line);
+  display:flex;gap:18px;max-width:1280px;margin:0 auto}
+footer .fsep{opacity:.4}
+.dropzone{position:fixed;inset:16px;border:2px dashed var(--acc);border-radius:16px;z-index:90;
+  display:none;place-items:center;background:rgba(8,14,20,.92);backdrop-filter:blur(6px);
+  color:var(--acc);font-size:18px;font-weight:700;letter-spacing:.5px}
+.dropzone.show{display:grid}
+@media (max-width:900px){.stats{display:none}.pipe{display:none}.tabs{flex-wrap:wrap}.legend{display:none}#search{width:100%}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-row">
+    <div class="brand"><span class="logo">◈</span><span>PART<b>INTEL</b></span>
+      <span class="sub">AI product-intelligence pipeline</span></div>
+    <div class="head-actions">
+      <button class="exportbtn" id="btnTheme" title="Toggle Theme" style="font-size:15px;padding:4px 8px;background:transparent;border:none">🌙</button>
+      <label class="persona" title="Reviewer persona — dynamically tags your identity in the audit trail (no login required)">
+        <span class="persona-ic" id="personaIc">🧑‍💼</span>
+        <select id="personaSel" class="persona-sel">
+          <option value="catalog">Senior Catalog Engineer</option>
+          <option value="compliance">Compliance Officer</option>
+          <option value="bot">Automated Pipeline Bot</option>
+        </select>
+      </label>
+      <button class="exportbtn ingest" id="btnIngest" title="Ingest a new product from raw source snippets — runs the live pipeline (needs: python run_ingest.py)">➕ Ingest New Product</button>
+      <button class="exportbtn json" id="btnExportJson" title="Download current product record with human resolutions as JSON">⬇ Export Resolved JSON</button>
+      <button class="exportbtn csv" id="btnExportCsv" title="Download enterprise audit trail CSV">📋 Audit Log</button>
+      <button class="exportbtn reset" id="btnReset" title="Reset to initial pipeline data">↺ Reset</button>
+      <button class="confbtn" id="confOpen" title="How confidence scores are computed">ⓘ Confidence</button>
+    </div>
+  </div>
+  <div class="topbar-row context">
+    <div class="prod">
+      <h1 id="prodName">—</h1>
+      <div class="cat" id="prodCat">—</div>
+    </div>
+    <div class="stats">
+      <div class="stat ok"><b id="stVerified">0</b><span>verified</span></div>
+      <div class="stat warn"><b id="stReview">0</b><span>needs review</span></div>
+      <div class="stat bad"><b id="stConflict">0</b><span>conflicts</span></div>
+      <div class="stat neutral"><b id="stOmitted">0</b><span>omitted</span></div>
+    </div>
+    <div class="pipe">mode <b id="stMode">—</b><br>validation <b id="stValid" class="okv">—</b> · <span id="stRules">—</span></div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab" data-tab="catalog">Catalog <span id="catCount" class="pill warn">0</span></button>
+  <button class="tab active" data-tab="fields">Extracted fields</button>
+  <button class="tab" data-tab="review">Review queue <span id="qCount" class="pill warn">0</span></button>
+  <button class="tab" data-tab="marketing">Marketing copy</button>
+  <button class="tab" data-tab="sources">Sources</button>
+  <button class="tab" data-tab="conv">Unit conversions <span id="convCount" class="pill ok">0</span></button>
+  <div class="spacer"></div>
+  <div class="legend"><span class="lg ok">≥0.90</span><span class="lg mid">0.75–0.90</span><span class="lg bad">&lt;0.75</span></div>
+  <input id="search" type="search" placeholder="Filter fields…" autocomplete="off">
+</nav>
+
+<main>
+  <!-- catalog tab (embedded by run_catalog.py; shows the whole product catalog) -->
+  <section id="tab-catalog" class="tabpane">
+    <div class="cathero" id="catHero"></div>
+    <div class="catnote" id="catNote"></div>
+    <div class="filters" id="catFilters">
+      <button class="chip dot all on" data-f="all">All <span class="n" id="catAll"></span></button>
+      <button class="chip dot ok" data-f="ok">OK <span class="n" id="catOk"></span></button>
+      <button class="chip dot bad" data-f="failed">Failed <span class="n" id="catFail"></span></button>
+      <span class="sep"></span>
+      <span class="hint">Click a product row to load its full record into this console</span>
+    </div>
+    <div class="tblwrap">
+      <table>
+        <thead><tr>
+          <th>Product</th><th>Category</th><th>Verified</th><th>Needs review</th><th>Conflicts</th><th>Rules</th><th>Status</th>
+        </tr></thead>
+        <tbody id="catBody"></tbody>
+      </table>
+      <div id="catEmpty" class="empty" style="display:none">No products match the current filter.</div>
+    </div>
+  </section>
+
+  <!-- fields tab -->
+  <section id="tab-fields" class="tabpane active">
+    <div class="filters" id="statusFilters">
+      <button class="chip dot all on" data-f="all">All <span class="n" id="nAll"></span></button>
+      <button class="chip dot ok" data-f="verified">Verified <span class="n" id="nVer"></span></button>
+      <button class="chip dot warn" data-f="needs_review">Needs review <span class="n" id="nRev"></span></button>
+      <button class="chip dot bad" data-f="conflict">Conflict <span class="n" id="nConf"></span></button>
+      <span class="sep"></span>
+      <span class="hint">Click any row for the source-level breakdown, exact snippets &amp; reasoning</span>
+    </div>
+    <div class="tblwrap">
+      <table>
+        <thead><tr>
+          <th>Field</th><th>Value</th><th>Confidence</th><th>Extraction</th><th>Sources</th><th>Status</th>
+        </tr></thead>
+        <tbody id="fieldsBody"></tbody>
+      </table>
+      <div id="fieldsEmpty" class="empty" style="display:none">No fields match the current filter.</div>
+    </div>
+  </section>
+
+  <!-- review queue tab -->
+  <section id="tab-review" class="tabpane">
+    <div class="filters">
+      <span class="hint" id="qHint">Low-confidence or conflicted fields are routed here and never auto-published.</span>
+    </div>
+    <div class="qgrid" id="queueBody"></div>
+  </section>
+
+  <!-- marketing tab -->
+  <section id="tab-marketing" class="tabpane">
+    <div class="mkt">
+      <h2>Generated marketing description — click a highlighted value to see its sources</h2>
+      <p id="mktDesc"></p>
+      <div class="mnote" id="mktNote"></div>
+      <table class="cit">
+        <thead><tr><th>Field</th><th>Value</th><th>Cited from</th></tr></thead>
+        <tbody id="mktCit"></tbody>
+      </table>
+      <div class="skip" id="mktSkip" style="display:none"></div>
+    </div>
+  </section>
+
+  <!-- unit conversions tab -->
+  <section id="tab-conv" class="tabpane">
+    <div class="filters">
+      <span class="hint">Sources that reported the same field in a different unit than the schema's canonical unit — the merge converted each one to the normalized value before checking agreement (kN↔N · HP↔kW · PSI↔bar · ft·lb↔N·m).</span>
+    </div>
+    <div class="tblwrap">
+      <table>
+        <thead><tr>
+          <th>Field</th><th>Source</th><th>Original (as extracted)</th><th></th><th>Merged value (schema unit)</th>
+        </tr></thead>
+        <tbody id="convBody"></tbody>
+      </table>
+      <div id="convEmpty" class="empty" style="display:none">No unit conversions — every source already reported the schema's canonical unit.</div>
+    </div>
+  </section>
+
+  <!-- sources tab -->
+  <section id="tab-sources" class="tabpane">
+    <div class="sgrid" id="sourcesBody"></div>
+  </section>
+</main>
+
+<aside id="backdrop" class="backdrop"></aside>
+<aside id="panel" class="panel">
+  <div class="phead">
+    <div class="ptitle"><h2 id="pTitle"></h2><span id="pBadge"></span>
+      <button class="pclose" id="pClose" title="Close (Esc)">×</button></div>
+    <div class="pval" id="pVal"></div>
+    <div class="pconf"><div class="confbar"><i id="pConfBar"></i></div>
+      <span class="confpct" id="pConfPct"></span></div>
+  </div>
+  <div class="pscroll" id="pScroll"></div>
+</aside>
+
+<footer>
+  <span id="fMode"></span><span class="fsep">·</span>
+  <span id="fValid"></span><span class="fsep">·</span>
+  <span id="fRules"></span><span class="fsep">·</span>
+  <span id="fTime"></span><span class="fsep">·</span>
+  <span>Drag &amp; drop a product JSON here to reload (demo)</span>
+</footer>
+
+<div id="dropzone" class="dropzone">Drop product JSON to load</div>
+
+<div id="toast" class="toast"></div>
+
+<div id="ingestModal" class="confmodal" aria-hidden="true">
+  <div class="ingestcard" role="dialog" aria-label="Ingest a new product">
+    <div class="confhead">
+      <h3>➕ Interactive Ingestion Studio — run the live pipeline on pasted raw text, watch it normalize units &amp; flag conflicts</h3>
+      <button class="pclose" id="ingestClose" title="Close (Esc)">×</button>
+    </div>
+    <div class="ingestbody">
+      <div class="ingest-row">
+        <div class="ingest-field">
+          <label class="ingest-lbl" for="ingestCat">Product category</label>
+          <select id="ingestCat" class="ingest-select"></select>
+        </div>
+        <div class="ingest-field">
+          <label class="ingest-lbl" for="ingestPid">SKU / product name</label>
+          <input id="ingestPid" class="ingest-input" placeholder="e.g. 6210-2RS" spellcheck="false">
+        </div>
+      </div>
+      <div>
+        <div class="ingest-subhead">Target fields this category will extract</div>
+        <div class="ingest-fields-preview" id="ingestFieldsPreview"></div>
+      </div>
+      <div>
+        <div class="ingest-subhead">Source snippets — paste 2–3 specs (or 📄 upload raw files: datasheet .txt exports, web page HTML, photo-OCR text), ideally with mismatched units (kN vs N · HP vs kW · PSI vs bar · ft·lb vs N·m) so the merge visibly reconciles them and flags conflicts</div>
+        <div id="ingestSources"></div>
+      </div>
+      <div class="ingest-tools">
+        <button class="qbtn" id="ingestAddSource">+ Add source</button>
+        <span class="sep" style="flex:1"></span>
+        <label class="hint" for="ingestCase">test case:</label>
+        <select id="ingestCase" class="ingest-select" style="width:auto;padding:6px 10px;font-size:12px">
+          <option value="">— custom input —</option>
+          <option value="deep_groove_ball_bearing">⚡ Bearing (kN vs N)</option>
+          <option value="electric_motor">⚡ Motor (HP vs kW)</option>
+          <option value="2_way_ball_valve">⚡ Valve (PSI vs bar)</option>
+          <option value="helical_gear_reducer">⚡ Gearbox (N·m vs ft·lb)</option>
+          <option value="bearing_stress">🧪 Stress: messy bearing (OCR typo · thousands sep. · lb)</option>
+          <option value="valve_imperial">🧪 Stress: imperial valve (in · PSI · lb)</option>
+        </select>
+      </div>
+      <div class="ingest-run">
+        <button class="hitl-btn-resolve" id="ingestRun" style="font-size:13px;padding:9px 20px">▶ Run Pipeline Extraction</button>
+        <span class="ingest-status" id="ingestStatus"></span>
+      </div>
+      <div class="ingest-progress" id="ingestProgress" style="display:none"></div>
+      <div class="ingest-result" id="ingestResult" style="display:none">
+        <div class="ingest-subhead">Pipeline result — what extraction, normalization &amp; conflict detection produced</div>
+        <div class="ingest-stats" id="ingestResultStats"></div>
+        <div class="ingest-result-grid">
+          <div class="ingest-rpanel" id="ingestResultConvs"></div>
+          <div class="ingest-rpanel" id="ingestResultConflicts"></div>
+        </div>
+        <div class="ingest-rpanel" id="ingestResultMkt"></div>
+        <div class="ingest-result-actions">
+          <button class="hitl-btn-resolve" id="ingestResultOpen" style="font-size:12.5px;padding:8px 16px">Open full record in console →</button>
+          <button class="qbtn reset" id="ingestResultAgain">Run another</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="confModal" class="confmodal" aria-hidden="true">
+  <div class="confcard" role="dialog" aria-label="Confidence model">
+    <div class="confhead"><h3>How confidence is computed</h3>
+      <button class="pclose" id="confClose" title="Close (Esc)">×</button></div>
+    <div class="confbody">
+      <div class="cfstep"><b>1 · Extraction</b><span>Each source reports how clean and explicit its value was (0.55–0.95).</span></div>
+      <div class="cfstep"><b>2 · Effective</b><span>source authority × extraction confidence. Authority: PDF datasheet 0.95 · manufacturer web 0.85 · photo OCR 0.70.</span></div>
+      <div class="cfstep"><b>3 · Merge</b><span>best effective confidence + 0.08 per additional agreeing source, capped at 0.98. A single source is discounted × 0.95 — with no second source there is no independent cross-check.</span></div>
+      <div class="cfstep"><b>4 · Conflict</b><span>an unresolved disagreement is fixed at 0.40 and never auto-published.</span></div>
+      <div class="cfstep"><b>Routing</b><span>a field is <i>verified</i> only if confidence ≥ 0.75, no conflict, and no validation error — otherwise it lands in the needs_review queue.</span></div>
+      <div class="cfnote">Heuristic weights, not calibrated probabilities — fine for a review queue, not for downstream ML training without re-weighting.</div>
+    </div>
+  </div>
+</div>
+<script>
+// --- theme toggle ---
+const storedTheme = localStorage.getItem('partintel-theme') || 'dark';
+if (storedTheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+
+document.addEventListener("DOMContentLoaded", () => {
+  const btnTheme = document.getElementById('btnTheme');
+  btnTheme.textContent = document.documentElement.getAttribute('data-theme') === 'light' ? '☀️' : '🌙';
+  btnTheme.addEventListener('click', () => {
+    if (document.documentElement.getAttribute('data-theme') === 'light') {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('partintel-theme', 'dark');
+      btnTheme.textContent = '🌙';
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('partintel-theme', 'light');
+      btnTheme.textContent = '☀️';
+    }
+  });
+});
+
+"use strict";
+const SAMPLE = {"product_id":"6205-2RS","category":"deep_groove_ball_bearing","category_label":"Deep groove ball bearing","pipeline":{"version":"1.0.0","mode":"mock","provider_note":"deterministic mock (offline)","run_at":"2026-08-07T18:50:03+00:00"},"sources":[{"id":"src_pdf","type":"pdf","title":"Datasheet 6205-2RSH (rev 4, p.1)","authority":0.95,"lines":13,"fields_extracted":11,"path":"data/sample/6205_datasheet.pdf.txt"},{"id":"src_web","type":"web","title":"Manufacturer product page - 6205-2RS","authority":0.85,"lines":11,"fields_extracted":12,"path":"data/sample/6205_webpage.html"},{"id":"src_ocr","type":"ocr","title":"Product photo OCR (stamping on bearing face)","authority":0.7,"lines":5,"fields_extracted":6,"path":"data/sample/6205_photo_ocr.txt"}],"fields":[{"field":"part_number","label":"Part number","unit":null,"value":"6205-2RSH","confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"part_number","value":"6205-2RSH","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"SKF 6205-2RSH Deep groove ball bearing","line_start":1,"line_end":1,"reasoning":"Pattern matched on line 1: SKF 6205-2RSH Deep groove ball bearing"},{"field":"part_number","value":"6205-2RS","unit":null,"confidence":0.85,"method":"llm_inference","source_id":"src_web","snippet":"6205-2RS Ball Bearing","line_start":1,"line_end":1,"reasoning":"Pattern matched on line 1: 6205-2RS Ball Bearing"}],"conflicts":[],"reasoning":"2 sources agree on Part number (normalized '6205'); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"brand","label":"Brand","unit":null,"value":"SKF","confidence":0.857,"status":"verified","flags":["single_source"],"sources":[{"field":"brand","value":"SKF","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"SKF 6205-2RSH Deep groove ball bearing","line_start":1,"line_end":1,"reasoning":"Pattern matched on line 1: SKF 6205-2RSH Deep groove ball bearing"}],"conflicts":[],"reasoning":"Single source (src_pdf) provides Brand; effective confidence 0.86.","dropped":[],"validation_issues":[]},{"field":"bore_diameter","label":"Bore diameter (d)","unit":"mm","value":25,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"bore_diameter","value":"25","unit":"mm","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"d [mm] 25","line_start":4,"line_end":4,"reasoning":"Pattern matched on line 4: d [mm] 25"},{"field":"bore_diameter","value":"25","unit":"mm","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Bore: 25 mm, OD: 52 mm, Width: 15 mm.","line_start":3,"line_end":3,"reasoning":"Pattern matched on line 3: Bore: 25 mm, OD: 52 mm, Width: 15 mm."},{"field":"bore_diameter","value":"25","unit":"mm","confidence":0.7,"method":"llm_inference","source_id":"src_ocr","snippet":"25x52x15","line_start":3,"line_end":3,"reasoning":"Pattern matched on line 3: 25x52x15"}],"conflicts":[],"reasoning":"3 sources agree on Bore diameter (d) (normalized 25.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"outer_diameter","label":"Outer diameter (D)","unit":"mm","value":52,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"outer_diameter","value":"52","unit":"mm","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"D [mm] 52","line_start":5,"line_end":5,"reasoning":"Pattern matched on line 5: D [mm] 52"},{"field":"outer_diameter","value":"52","unit":"mm","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Bore: 25 mm, OD: 52 mm, Width: 15 mm.","line_start":3,"line_end":3,"reasoning":"Pattern matched on line 3: Bore: 25 mm, OD: 52 mm, Width: 15 mm."},{"field":"outer_diameter","value":"52","unit":"mm","confidence":0.7,"method":"llm_inference","source_id":"src_ocr","snippet":"25x52x15","line_start":3,"line_end":3,"reasoning":"Pattern matched on line 3: 25x52x15"}],"conflicts":[],"reasoning":"3 sources agree on Outer diameter (D) (normalized 52.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"width","label":"Width (B)","unit":"mm","value":15,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"width","value":"15","unit":"mm","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"B [mm] 15","line_start":6,"line_end":6,"reasoning":"Pattern matched on line 6: B [mm] 15"},{"field":"width","value":"15","unit":"mm","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Bore: 25 mm, OD: 52 mm, Width: 15 mm.","line_start":3,"line_end":3,"reasoning":"Pattern matched on line 3: Bore: 25 mm, OD: 52 mm, Width: 15 mm."},{"field":"width","value":"15","unit":"mm","confidence":0.7,"method":"llm_inference","source_id":"src_ocr","snippet":"25x52x15","line_start":3,"line_end":3,"reasoning":"Pattern matched on line 3: 25x52x15"}],"conflicts":[],"reasoning":"3 sources agree on Width (B) (normalized 15.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"dynamic_load_rating","label":"Dynamic load rating (C)","unit":"kN","value":14,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"dynamic_load_rating","value":"14.0","unit":"kN","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Basic dynamic load rating C 14.0 kN","line_start":8,"line_end":8,"reasoning":"Pattern matched on line 8: Basic dynamic load rating C 14.0 kN"},{"field":"dynamic_load_rating","value":"14000","unit":"N","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Dynamic load rating  |  14000 N","line_start":4,"line_end":4,"reasoning":"Pattern matched on line 4: Dynamic load rating  |  14000 N"}],"conflicts":[],"reasoning":"2 sources agree on Dynamic load rating (C) (normalized 14.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"static_load_rating","label":"Static load rating (C0)","unit":"kN","value":7.8,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"static_load_rating","value":"7.8","unit":"kN","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Basic static load rating C0 7.8 kN","line_start":9,"line_end":9,"reasoning":"Pattern matched on line 9: Basic static load rating C0 7.8 kN"},{"field":"static_load_rating","value":"7800","unit":"N","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Static load rating  |  7 800 N","line_start":5,"line_end":5,"reasoning":"Pattern matched on line 5: Static load rating  |  7 800 N"}],"conflicts":[],"reasoning":"2 sources agree on Static load rating (C0) (normalized 7.8); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"max_speed","label":"Max speed","unit":"rpm","value":null,"confidence":0.4,"status":"needs_review","flags":["conflict"],"sources":[{"field":"max_speed","value":"13000","unit":"rpm","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Limiting speed 13000 r/min","line_start":11,"line_end":11,"reasoning":"Pattern matched on line 11: Limiting speed 13000 r/min"},{"field":"max_speed","value":"12000","unit":"rpm","confidence":0.85,"method":"table_parse","source_id":"src_web","snippet":"Max speed (grease)  |  12 000 rpm","line_start":6,"line_end":6,"reasoning":"Pattern matched on line 6: Max speed (grease)  |  12 000 rpm"}],"conflicts":[{"field":"max_speed","reason":"Sources disagree on Max speed: src_pdf=13000 rpm; src_web=12000 rpm","values":[{"source_id":"src_pdf","value":"13000","unit":"rpm"},{"source_id":"src_web","value":"12000","unit":"rpm"}]}],"reasoning":"Sources disagree on Max speed: src_pdf=13000 rpm; src_web=12000 rpm","dropped":[],"validation_issues":[]},{"field":"weight","label":"Weight","unit":"kg","value":0.127,"confidence":0.857,"status":"verified","flags":["single_source"],"sources":[{"field":"weight","value":"0.127","unit":"kg","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Mass 0.127 kg","line_start":13,"line_end":13,"reasoning":"Pattern matched on line 13: Mass 0.127 kg"}],"conflicts":[],"reasoning":"Single source (src_pdf) provides Weight; effective confidence 0.86.","dropped":[],"validation_issues":[]},{"field":"seal_type","label":"Seal type","unit":null,"value":"2RS","confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"seal_type","value":"2RS","unit":null,"confidence":0.95,"method":"llm_inference","source_id":"src_pdf","snippet":"Seal  Contact seal, RS1 on both sides","line_start":15,"line_end":15,"reasoning":"Pattern matched on line 15: Seal  Contact seal, RS1 on both sides"},{"field":"seal_type","value":"2RS","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Seal  |  2RS (rubber contact)","line_start":8,"line_end":8,"reasoning":"Pattern matched on line 8: Seal  |  2RS (rubber contact)"},{"field":"seal_type","value":"2RS","unit":null,"confidence":0.6,"method":"ocr_heuristic","source_id":"src_ocr","snippet":"2RS","line_start":2,"line_end":2,"reasoning":"Pattern matched on line 2: 2RS"}],"conflicts":[],"reasoning":"3 sources agree on Seal type (normalized '2RS'); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"clearance","label":"Internal clearance","unit":null,"value":"CN","confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"clearance","value":"CN","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Internal clearance  CN","line_start":16,"line_end":16,"reasoning":"Pattern matched on line 16: Internal clearance  CN"},{"field":"clearance","value":"CN","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Internal clearance  |  CN","line_start":9,"line_end":9,"reasoning":"Pattern matched on line 9: Internal clearance  |  CN"}],"conflicts":[],"reasoning":"2 sources agree on Internal clearance (normalized 'CN'); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"temperature_range_min","label":"Min operating temp","unit":"°C","value":-20,"confidence":0.767,"status":"verified","flags":["single_source"],"sources":[{"field":"temperature_range_min","value":"-20","unit":"°C","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Operating temperature  |  -20 °C to +120 °C","line_start":7,"line_end":7,"reasoning":"Pattern matched on line 7: Operating temperature  |  -20 °C to +120 °C"}],"conflicts":[],"reasoning":"Single source (src_web) provides Min operating temp; effective confidence 0.77.","dropped":[],"validation_issues":[]},{"field":"temperature_range_max","label":"Max operating temp","unit":"°C","value":120,"confidence":0.767,"status":"verified","flags":["single_source"],"sources":[{"field":"temperature_range_max","value":"+120","unit":"°C","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Operating temperature  |  -20 °C to +120 °C","line_start":7,"line_end":7,"reasoning":"Pattern matched on line 7: Operating temperature  |  -20 °C to +120 °C"}],"conflicts":[],"reasoning":"Single source (src_web) provides Max operating temp; effective confidence 0.77.","dropped":[],"validation_issues":[]},{"field":"country_of_origin","label":"Country of origin","unit":null,"value":"Japan","confidence":0.887,"status":"verified","flags":["multi_source"],"sources":[{"field":"country_of_origin","value":"Japan","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Made in  |  Japan","line_start":10,"line_end":10,"reasoning":"Pattern matched on line 10: Made in  |  Japan"},{"field":"country_of_origin","value":"Japan","unit":null,"confidence":0.6,"method":"ocr_heuristic","source_id":"src_ocr","snippet":"JAPAN","line_start":4,"line_end":4,"reasoning":"Pattern matched on line 4: JAPAN"}],"conflicts":[],"reasoning":"2 sources agree on Country of origin (normalized 'japan'); confidence boosted from 0.81 to 0.89.","dropped":[],"validation_issues":[]},{"field":"precision_grade","label":"Precision grade","unit":null,"value":"ABEC 1","confidence":0.366,"status":"needs_review","flags":["single_source","low_confidence"],"sources":[{"field":"precision_grade","value":"ABEC 1","unit":null,"confidence":0.55,"method":"ocr_heuristic","source_id":"src_ocr","snippet":"ABEC 1","line_start":5,"line_end":5,"reasoning":"Pattern matched on line 5: ABEC 1"}],"conflicts":[],"reasoning":"Single source (src_ocr) provides Precision grade; effective confidence 0.37.","dropped":[],"validation_issues":[]}],"validation":{"passed":true,"rules_run":12,"issues":[],"note":"Explicit category rule table (not ML); rules only run on extracted fields."},"needs_review_queue":[{"field":"max_speed","label":"Max speed","confidence":0.4,"flags":["conflict"],"reason":"Sources disagree on Max speed: src_pdf=13000 rpm; src_web=12000 rpm","value":null,"sources":["src_pdf","src_web"]},{"field":"precision_grade","label":"Precision grade","confidence":0.366,"flags":["single_source","low_confidence"],"reason":"Only 1 source(s), effective confidence 0.37 \u003c 0.75 threshold","value":"ABEC 1","sources":["src_ocr"]}],"marketing":{"description":"The 6205-2RSH is a sealed deep groove ball bearing with a 25 mm bore, 52 mm outer diameter and 15 mm width. It is rated for a dynamic load of 14 kN and a static load of 7.8 kN. Operating temperature range is -20 °C to 120 °C. The unit weighs 0.127 kg.","citations":[{"field":"part_number","label":"Part number","value":"6205-2RSH","sources":[{"source_id":"src_pdf","snippet":"SKF 6205-2RSH Deep groove ball bearing"},{"source_id":"src_web","snippet":"6205-2RS Ball Bearing"}]},{"field":"seal_type","label":"Seal type","value":"2RS","sources":[{"source_id":"src_pdf","snippet":"Seal  Contact seal, RS1 on both sides"},{"source_id":"src_web","snippet":"Seal  |  2RS (rubber contact)"},{"source_id":"src_ocr","snippet":"2RS"}]},{"field":"bore_diameter","label":"Bore diameter (d)","value":"25","sources":[{"source_id":"src_pdf","snippet":"d [mm] 25"},{"source_id":"src_web","snippet":"Bore: 25 mm, OD: 52 mm, Width: 15 mm."},{"source_id":"src_ocr","snippet":"25x52x15"}]},{"field":"outer_diameter","label":"Outer diameter (D)","value":"52","sources":[{"source_id":"src_pdf","snippet":"D [mm] 52"},{"source_id":"src_web","snippet":"Bore: 25 mm, OD: 52 mm, Width: 15 mm."},{"source_id":"src_ocr","snippet":"25x52x15"}]},{"field":"width","label":"Width (B)","value":"15","sources":[{"source_id":"src_pdf","snippet":"B [mm] 15"},{"source_id":"src_web","snippet":"Bore: 25 mm, OD: 52 mm, Width: 15 mm."},{"source_id":"src_ocr","snippet":"25x52x15"}]},{"field":"dynamic_load_rating","label":"Dynamic load rating (C)","value":"14","sources":[{"source_id":"src_pdf","snippet":"Basic dynamic load rating C 14.0 kN"},{"source_id":"src_web","snippet":"Dynamic load rating  |  14000 N"}]},{"field":"static_load_rating","label":"Static load rating (C0)","value":"7.8","sources":[{"source_id":"src_pdf","snippet":"Basic static load rating C0 7.8 kN"},{"source_id":"src_web","snippet":"Static load rating  |  7 800 N"}]},{"field":"temperature_range_min","label":"Min operating temp","value":"-20","sources":[{"source_id":"src_web","snippet":"Operating temperature  |  -20 °C to +120 °C"}]},{"field":"temperature_range_max","label":"Max operating temp","value":"120","sources":[{"source_id":"src_web","snippet":"Operating temperature  |  -20 °C to +120 °C"}]},{"field":"weight","label":"Weight","value":"0.127","sources":[{"source_id":"src_pdf","snippet":"Mass 0.127 kg"}]}],"sentences_skipped":["sentence using max_speed skipped (needs_review/missing/conflict)"],"note":"Marketing copy only cites verified fields; needs_review fields are never auto-published."},"summary":{"total_fields_in_schema":16,"extracted":15,"omitted_not_found":["material"],"verified":13,"needs_review":2,"conflicts":1,"rules_run":12},"ai_review":{"mode":"mock","provider_note":"deterministic template review (offline)","reviews":[{"field":"max_speed","label":"Max speed","flags":["conflict"],"confidence":0.4,"value":null,"review":"Cross-source conflict on Max speed: Sources disagree on Max speed: src_pdf=13000 rpm; src_web=12000 rpm. The values disagree beyond the 1% (relative, with a 0.05 absolute floor) agreement tolerance, so neither can be auto-published without human judgment.","suggested_action":"Check the highest-authority source (Datasheet 6205-2RSH (rev 4, p.1) (authority 0.95), Manufacturer product page - 6205-2RS (authority 0.85)) for a typo or a different operating condition, then record the single correct value."},{"field":"precision_grade","label":"Precision grade","flags":["single_source","low_confidence"],"confidence":0.366,"value":"ABEC 1","review":"Precision grade is backed by only 1 source(s) with effective confidence 0.37, below the 0.75 verification threshold. With no second independent source there is no cross-check.","suggested_action":"Confirm Precision grade from an additional independent source to raise confidence above 0.75."}],"summary":"Reviewed 2 field(s): 1 conflict(s), 1 low-confidence, 0 validation. None can auto-publish until resolved.","fields_reviewed":2,"all_clear":false}};
+
+const CATALOG = {"catalog_id":"demo","name":"PartIntel demo catalog","pipeline":{"version":"1.0.0","mode":"mock","max_workers":4,"run_at":"2026-08-08T18:50:26+00:00"},"totals":{"products":4,"ok":4,"failed":0,"verified":46,"needs_review":3,"conflicts":2,"rules_run":48},"products":[{"product_id":"6205-2RS","category":"deep_groove_ball_bearing","category_label":"Deep groove ball bearing","status":"ok","verified":13,"needs_review":2,"conflicts":1,"rules_run":12,"extracted":15,"omitted_not_found":["material"],"output":"C:\\Users\\ACER\\product-intel\\output\\6205_product.json","error":null},{"product_id":"V2000-BS","category":"2_way_ball_valve","category_label":"Two-way ball valve","status":"ok","verified":9,"needs_review":0,"conflicts":0,"rules_run":10,"extracted":9,"omitted_not_found":[],"output":"C:\\Users\\ACER\\product-intel\\output\\valve_product.json","error":null},{"product_id":"ME-132S-4","category":"electric_motor","category_label":"Three-phase induction motor","status":"ok","verified":13,"needs_review":0,"conflicts":0,"rules_run":15,"extracted":13,"omitted_not_found":[],"output":"C:\\Users\\ACER\\product-intel\\output\\motor_product.json","error":null},{"product_id":"GRX-225-M","category":"helical_gear_reducer","category_label":"Helical gear reducer","status":"ok","verified":11,"needs_review":1,"conflicts":1,"rules_run":11,"extracted":12,"omitted_not_found":[],"output":"C:\\Users\\ACER\\product-intel\\output\\gearbox_product.json","error":null}]};
+const RECORDS = {"6205-2RS":{"product_id":"6205-2RS","category":"deep_groove_ball_bearing","category_label":"Deep groove ball bearing","pipeline":{"version":"1.0.0","mode":"mock","provider_note":"deterministic mock (offline)","run_at":"2026-08-08T18:50:26+00:00"},"sources":[{"id":"src_pdf","type":"pdf","title":"Datasheet 6205-2RSH (rev 4, p.1)","authority":0.95,"lines":13,"fields_extracted":11,"path":"data/sample/6205_datasheet.pdf.txt"},{"id":"src_web","type":"web","title":"Manufacturer product page - 6205-2RS","authority":0.85,"lines":11,"fields_extracted":12,"path":"data/sample/6205_webpage.html"},{"id":"src_ocr","type":"ocr","title":"Product photo OCR (stamping on bearing face)","authority":0.7,"lines":5,"fields_extracted":6,"path":"data/sample/6205_photo_ocr.txt"}],"fields":[{"field":"part_number","label":"Part number","unit":null,"value":"6205-2RSH","confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"part_number","value":"6205-2RSH","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"SKF 6205-2RSH Deep groove ball bearing","line_start":1,"line_end":1,"reasoning":"Pattern matched on line 1: SKF 6205-2RSH Deep groove ball bearing"},{"field":"part_number","value":"6205-2RS","unit":null,"confidence":0.85,"method":"llm_inference","source_id":"src_web","snippet":"6205-2RS Ball Bearing","line_start":1,"line_end":1,"reasoning":"Pattern matched on line 1: 6205-2RS Ball Bearing"}],"conflicts":[],"reasoning":"2 sources agree on Part number (normalized '6205'); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"brand","label":"Brand","unit":null,"value":"SKF","confidence":0.857,"status":"verified","flags":["single_source"],"sources":[{"field":"brand","value":"SKF","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"SKF 6205-2RSH Deep groove ball bearing","line_start":1,"line_end":1,"reasoning":"Pattern matched on line 1: SKF 6205-2RSH Deep groove ball bearing"}],"conflicts":[],"reasoning":"Single source (src_pdf) provides Brand; effective confidence 0.86.","dropped":[],"validation_issues":[]},{"field":"bore_diameter","label":"Bore diameter (d)","unit":"mm","value":25,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"bore_diameter","value":"25","unit":"mm","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"d [mm] 25","line_start":4,"line_end":4,"reasoning":"Pattern matched on line 4: d [mm] 25"},{"field":"bore_diameter","value":"25","unit":"mm","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Bore: 25 mm, OD: 52 mm, Width: 15 mm.","line_start":3,"line_end":3,"reasoning":"Pattern matched on line 3: Bore: 25 mm, OD: 52 mm, Width: 15 mm."},{"field":"bore_diameter","value":"25","unit":"mm","confidence":0.7,"method":"llm_inference","source_id":"src_ocr","snippet":"25x52x15","line_start":3,"line_end":3,"reasoning":"Pattern matched on line 3: 25x52x15"}],"conflicts":[],"reasoning":"3 sources agree on Bore diameter (d) (normalized 25.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"outer_diameter","label":"Outer diameter (D)","unit":"mm","value":52,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"outer_diameter","value":"52","unit":"mm","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"D [mm] 52","line_start":5,"line_end":5,"reasoning":"Pattern matched on line 5: D [mm] 52"},{"field":"outer_diameter","value":"52","unit":"mm","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Bore: 25 mm, OD: 52 mm, Width: 15 mm.","line_start":3,"line_end":3,"reasoning":"Pattern matched on line 3: Bore: 25 mm, OD: 52 mm, Width: 15 mm."},{"field":"outer_diameter","value":"52","unit":"mm","confidence":0.7,"method":"llm_inference","source_id":"src_ocr","snippet":"25x52x15","line_start":3,"line_end":3,"reasoning":"Pattern matched on line 3: 25x52x15"}],"conflicts":[],"reasoning":"3 sources agree on Outer diameter (D) (normalized 52.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"width","label":"Width (B)","unit":"mm","value":15,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"width","value":"15","unit":"mm","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"B [mm] 15","line_start":6,"line_end":6,"reasoning":"Pattern matched on line 6: B [mm] 15"},{"field":"width","value":"15","unit":"mm","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Bore: 25 mm, OD: 52 mm, Width: 15 mm.","line_start":3,"line_end":3,"reasoning":"Pattern matched on line 3: Bore: 25 mm, OD: 52 mm, Width: 15 mm."},{"field":"width","value":"15","unit":"mm","confidence":0.7,"method":"llm_inference","source_id":"src_ocr","snippet":"25x52x15","line_start":3,"line_end":3,"reasoning":"Pattern matched on line 3: 25x52x15"}],"conflicts":[],"reasoning":"3 sources agree on Width (B) (normalized 15.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"dynamic_load_rating","label":"Dynamic load rating (C)","unit":"kN","value":14,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"dynamic_load_rating","value":"14.0","unit":"kN","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Basic dynamic load rating C 14.0 kN","line_start":8,"line_end":8,"reasoning":"Pattern matched on line 8: Basic dynamic load rating C 14.0 kN"},{"field":"dynamic_load_rating","value":"14000","unit":"N","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Dynamic load rating  |  14000 N","line_start":4,"line_end":4,"reasoning":"Pattern matched on line 4: Dynamic load rating  |  14000 N"}],"conflicts":[],"reasoning":"2 sources agree on Dynamic load rating (C) (normalized 14.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"static_load_rating","label":"Static load rating (C0)","unit":"kN","value":7.8,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"static_load_rating","value":"7.8","unit":"kN","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Basic static load rating C0 7.8 kN","line_start":9,"line_end":9,"reasoning":"Pattern matched on line 9: Basic static load rating C0 7.8 kN"},{"field":"static_load_rating","value":"7800","unit":"N","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Static load rating  |  7 800 N","line_start":5,"line_end":5,"reasoning":"Pattern matched on line 5: Static load rating  |  7 800 N"}],"conflicts":[],"reasoning":"2 sources agree on Static load rating (C0) (normalized 7.8); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"max_speed","label":"Max speed","unit":"rpm","value":null,"confidence":0.4,"status":"needs_review","flags":["conflict"],"sources":[{"field":"max_speed","value":"13000","unit":"rpm","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Limiting speed 13000 r/min","line_start":11,"line_end":11,"reasoning":"Pattern matched on line 11: Limiting speed 13000 r/min"},{"field":"max_speed","value":"12000","unit":"rpm","confidence":0.85,"method":"table_parse","source_id":"src_web","snippet":"Max speed (grease)  |  12 000 rpm","line_start":6,"line_end":6,"reasoning":"Pattern matched on line 6: Max speed (grease)  |  12 000 rpm"}],"conflicts":[{"field":"max_speed","reason":"Sources disagree on Max speed: src_pdf=13000 rpm; src_web=12000 rpm","values":[{"source_id":"src_pdf","value":"13000","unit":"rpm"},{"source_id":"src_web","value":"12000","unit":"rpm"}]}],"reasoning":"Sources disagree on Max speed: src_pdf=13000 rpm; src_web=12000 rpm","dropped":[],"validation_issues":[]},{"field":"weight","label":"Weight","unit":"kg","value":0.127,"confidence":0.857,"status":"verified","flags":["single_source"],"sources":[{"field":"weight","value":"0.127","unit":"kg","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Mass 0.127 kg","line_start":13,"line_end":13,"reasoning":"Pattern matched on line 13: Mass 0.127 kg"}],"conflicts":[],"reasoning":"Single source (src_pdf) provides Weight; effective confidence 0.86.","dropped":[],"validation_issues":[]},{"field":"seal_type","label":"Seal type","unit":null,"value":"2RS","confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"seal_type","value":"2RS","unit":null,"confidence":0.95,"method":"llm_inference","source_id":"src_pdf","snippet":"Seal  Contact seal, RS1 on both sides","line_start":15,"line_end":15,"reasoning":"Pattern matched on line 15: Seal  Contact seal, RS1 on both sides"},{"field":"seal_type","value":"2RS","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Seal  |  2RS (rubber contact)","line_start":8,"line_end":8,"reasoning":"Pattern matched on line 8: Seal  |  2RS (rubber contact)"},{"field":"seal_type","value":"2RS","unit":null,"confidence":0.6,"method":"ocr_heuristic","source_id":"src_ocr","snippet":"2RS","line_start":2,"line_end":2,"reasoning":"Pattern matched on line 2: 2RS"}],"conflicts":[],"reasoning":"3 sources agree on Seal type (normalized '2RS'); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"clearance","label":"Internal clearance","unit":null,"value":"CN","confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"clearance","value":"CN","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Internal clearance  CN","line_start":16,"line_end":16,"reasoning":"Pattern matched on line 16: Internal clearance  CN"},{"field":"clearance","value":"CN","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Internal clearance  |  CN","line_start":9,"line_end":9,"reasoning":"Pattern matched on line 9: Internal clearance  |  CN"}],"conflicts":[],"reasoning":"2 sources agree on Internal clearance (normalized 'CN'); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"temperature_range_min","label":"Min operating temp","unit":"°C","value":-20,"confidence":0.767,"status":"verified","flags":["single_source"],"sources":[{"field":"temperature_range_min","value":"-20","unit":"°C","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Operating temperature  |  -20 °C to +120 °C","line_start":7,"line_end":7,"reasoning":"Pattern matched on line 7: Operating temperature  |  -20 °C to +120 °C"}],"conflicts":[],"reasoning":"Single source (src_web) provides Min operating temp; effective confidence 0.77.","dropped":[],"validation_issues":[]},{"field":"temperature_range_max","label":"Max operating temp","unit":"°C","value":120,"confidence":0.767,"status":"verified","flags":["single_source"],"sources":[{"field":"temperature_range_max","value":"+120","unit":"°C","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Operating temperature  |  -20 °C to +120 °C","line_start":7,"line_end":7,"reasoning":"Pattern matched on line 7: Operating temperature  |  -20 °C to +120 °C"}],"conflicts":[],"reasoning":"Single source (src_web) provides Max operating temp; effective confidence 0.77.","dropped":[],"validation_issues":[]},{"field":"country_of_origin","label":"Country of origin","unit":null,"value":"Japan","confidence":0.887,"status":"verified","flags":["multi_source"],"sources":[{"field":"country_of_origin","value":"Japan","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Made in  |  Japan","line_start":10,"line_end":10,"reasoning":"Pattern matched on line 10: Made in  |  Japan"},{"field":"country_of_origin","value":"Japan","unit":null,"confidence":0.6,"method":"ocr_heuristic","source_id":"src_ocr","snippet":"JAPAN","line_start":4,"line_end":4,"reasoning":"Pattern matched on line 4: JAPAN"}],"conflicts":[],"reasoning":"2 sources agree on Country of origin (normalized 'japan'); confidence boosted from 0.81 to 0.89.","dropped":[],"validation_issues":[]},{"field":"precision_grade","label":"Precision grade","unit":null,"value":"ABEC 1","confidence":0.366,"status":"needs_review","flags":["single_source","low_confidence"],"sources":[{"field":"precision_grade","value":"ABEC 1","unit":null,"confidence":0.55,"method":"ocr_heuristic","source_id":"src_ocr","snippet":"ABEC 1","line_start":5,"line_end":5,"reasoning":"Pattern matched on line 5: ABEC 1"}],"conflicts":[],"reasoning":"Single source (src_ocr) provides Precision grade; effective confidence 0.37.","dropped":[],"validation_issues":[]}],"validation":{"passed":true,"rules_run":12,"issues":[],"note":"Explicit category rule table (not ML); rules only run on extracted fields."},"needs_review_queue":[{"field":"max_speed","label":"Max speed","confidence":0.4,"flags":["conflict"],"reason":"Sources disagree on Max speed: src_pdf=13000 rpm; src_web=12000 rpm","value":null,"sources":["src_pdf","src_web"]},{"field":"precision_grade","label":"Precision grade","confidence":0.366,"flags":["single_source","low_confidence"],"reason":"Only 1 source(s), effective confidence 0.37 \u003c 0.75 threshold","value":"ABEC 1","sources":["src_ocr"]}],"marketing":{"description":"The 6205-2RSH is a sealed deep groove ball bearing with a 25 mm bore, 52 mm outer diameter and 15 mm width. It is rated for a dynamic load of 14 kN and a static load of 7.8 kN. Operating temperature range is -20 °C to 120 °C. The unit weighs 0.127 kg.","citations":[{"field":"part_number","label":"Part number","value":"6205-2RSH","sources":[{"source_id":"src_pdf","snippet":"SKF 6205-2RSH Deep groove ball bearing"},{"source_id":"src_web","snippet":"6205-2RS Ball Bearing"}]},{"field":"seal_type","label":"Seal type","value":"2RS","sources":[{"source_id":"src_pdf","snippet":"Seal  Contact seal, RS1 on both sides"},{"source_id":"src_web","snippet":"Seal  |  2RS (rubber contact)"},{"source_id":"src_ocr","snippet":"2RS"}]},{"field":"bore_diameter","label":"Bore diameter (d)","value":"25","sources":[{"source_id":"src_pdf","snippet":"d [mm] 25"},{"source_id":"src_web","snippet":"Bore: 25 mm, OD: 52 mm, Width: 15 mm."},{"source_id":"src_ocr","snippet":"25x52x15"}]},{"field":"outer_diameter","label":"Outer diameter (D)","value":"52","sources":[{"source_id":"src_pdf","snippet":"D [mm] 52"},{"source_id":"src_web","snippet":"Bore: 25 mm, OD: 52 mm, Width: 15 mm."},{"source_id":"src_ocr","snippet":"25x52x15"}]},{"field":"width","label":"Width (B)","value":"15","sources":[{"source_id":"src_pdf","snippet":"B [mm] 15"},{"source_id":"src_web","snippet":"Bore: 25 mm, OD: 52 mm, Width: 15 mm."},{"source_id":"src_ocr","snippet":"25x52x15"}]},{"field":"dynamic_load_rating","label":"Dynamic load rating (C)","value":"14","sources":[{"source_id":"src_pdf","snippet":"Basic dynamic load rating C 14.0 kN"},{"source_id":"src_web","snippet":"Dynamic load rating  |  14000 N"}]},{"field":"static_load_rating","label":"Static load rating (C0)","value":"7.8","sources":[{"source_id":"src_pdf","snippet":"Basic static load rating C0 7.8 kN"},{"source_id":"src_web","snippet":"Static load rating  |  7 800 N"}]},{"field":"temperature_range_min","label":"Min operating temp","value":"-20","sources":[{"source_id":"src_web","snippet":"Operating temperature  |  -20 °C to +120 °C"}]},{"field":"temperature_range_max","label":"Max operating temp","value":"120","sources":[{"source_id":"src_web","snippet":"Operating temperature  |  -20 °C to +120 °C"}]},{"field":"weight","label":"Weight","value":"0.127","sources":[{"source_id":"src_pdf","snippet":"Mass 0.127 kg"}]}],"sentences_skipped":["sentence using max_speed skipped (needs_review/missing/conflict)"],"note":"Marketing copy only cites verified fields; needs_review fields are never auto-published."},"summary":{"total_fields_in_schema":16,"extracted":15,"omitted_not_found":["material"],"verified":13,"needs_review":2,"conflicts":1,"rules_run":12},"ai_review":{"mode":"mock","provider_note":"deterministic template review (offline)","reviews":[{"field":"max_speed","label":"Max speed","flags":["conflict"],"confidence":0.4,"value":null,"review":"Cross-source conflict on Max speed: Sources disagree on Max speed: src_pdf=13000 rpm; src_web=12000 rpm. The values disagree beyond the 1% (relative, with a 0.05 absolute floor) agreement tolerance, so neither can be auto-published without human judgment.","suggested_action":"Check the highest-authority source (Datasheet 6205-2RSH (rev 4, p.1) (authority 0.95), Manufacturer product page - 6205-2RS (authority 0.85)) for a typo or a different operating condition, then record the single correct value."},{"field":"precision_grade","label":"Precision grade","flags":["single_source","low_confidence"],"confidence":0.366,"value":"ABEC 1","review":"Precision grade is backed by only 1 source(s) with effective confidence 0.37, below the 0.75 verification threshold. With no second independent source there is no cross-check.","suggested_action":"Confirm Precision grade from an additional independent source to raise confidence above 0.75."}],"summary":"Reviewed 2 field(s): 1 conflict(s), 1 low-confidence, 0 validation. None can auto-publish until resolved.","fields_reviewed":2,"all_clear":false}},"V2000-BS":{"product_id":"V2000-BS","category":"2_way_ball_valve","category_label":"Two-way ball valve","pipeline":{"version":"1.0.0","mode":"mock","provider_note":"deterministic mock (offline)","run_at":"2026-08-08T18:50:26+00:00"},"sources":[{"id":"src_datasheet","type":"pdf","title":"Datasheet V2000-BS (rev 2, p.1)","authority":0.95,"lines":10,"fields_extracted":9,"path":"data/sample_valve/v2000_datasheet.txt"},{"id":"src_web","type":"web","title":"Manufacturer product page - V2000-BS","authority":0.85,"lines":8,"fields_extracted":8,"path":"data/sample_valve/v2000_webpage.html"}],"fields":[{"field":"part_number","label":"Part number","unit":null,"value":"V2000-BS","confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"part_number","value":"V2000-BS","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_datasheet","snippet":"Part no.   V2000-BS","line_start":1,"line_end":1,"reasoning":"Pattern matched on line 1: Part no.   V2000-BS"},{"field":"part_number","value":"V2000-BS","unit":null,"confidence":0.85,"method":"llm_inference","source_id":"src_web","snippet":"V2000-BS Two-Way Ball Valve","line_start":1,"line_end":1,"reasoning":"Pattern matched on line 1: V2000-BS Two-Way Ball Valve"}],"conflicts":[],"reasoning":"2 sources agree on Part number (normalized 'v2000-bs'); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"brand","label":"Brand","unit":null,"value":"AcmeFlow","confidence":0.857,"status":"verified","flags":["single_source"],"sources":[{"field":"brand","value":"AcmeFlow","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_datasheet","snippet":"Brand   AcmeFlow","line_start":2,"line_end":2,"reasoning":"Pattern matched on line 2: Brand   AcmeFlow"}],"conflicts":[],"reasoning":"Single source (src_datasheet) provides Brand; effective confidence 0.86.","dropped":[],"validation_issues":[]},{"field":"connection_size","label":"Connection size (DN)","unit":"mm","value":25,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"connection_size","value":"25","unit":"mm","confidence":0.95,"method":"table_parse","source_id":"src_datasheet","snippet":"DN [mm]   25","line_start":4,"line_end":4,"reasoning":"Pattern matched on line 4: DN [mm]   25"},{"field":"connection_size","value":"25","unit":"mm","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Connection  |  DN 25 mm","line_start":3,"line_end":3,"reasoning":"Pattern matched on line 3: Connection  |  DN 25 mm"}],"conflicts":[],"reasoning":"2 sources agree on Connection size (DN) (normalized 25.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"pressure_rating","label":"Pressure rating (PN)","unit":"bar","value":40,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"pressure_rating","value":"40","unit":"bar","confidence":0.95,"method":"table_parse","source_id":"src_datasheet","snippet":"Pressure rating   40 bar","line_start":5,"line_end":5,"reasoning":"Pattern matched on line 5: Pressure rating   40 bar"},{"field":"pressure_rating","value":"40","unit":"bar","confidence":0.9,"method":"table_parse","source_id":"src_web","snippet":"Pressure rating  |  PN 40 bar","line_start":4,"line_end":4,"reasoning":"Pattern matched on line 4: Pressure rating  |  PN 40 bar"}],"conflicts":[],"reasoning":"2 sources agree on Pressure rating (PN) (normalized 40.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"body_material","label":"Body material","unit":null,"value":"brass","confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"body_material","value":"brass","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_datasheet","snippet":"Body material   brass","line_start":6,"line_end":6,"reasoning":"Pattern matched on line 6: Body material   brass"},{"field":"body_material","value":"brass","unit":null,"confidence":0.9,"method":"table_parse","source_id":"src_web","snippet":"Body material  |  brass","line_start":5,"line_end":5,"reasoning":"Pattern matched on line 5: Body material  |  brass"}],"conflicts":[],"reasoning":"2 sources agree on Body material (normalized 'brass'); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"actuation","label":"Actuation","unit":null,"value":"manual","confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"actuation","value":"manual","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_datasheet","snippet":"Actuation   manual","line_start":8,"line_end":8,"reasoning":"Pattern matched on line 8: Actuation   manual"},{"field":"actuation","value":"manual lever","unit":null,"confidence":0.9,"method":"table_parse","source_id":"src_web","snippet":"Actuation  |  manual lever","line_start":6,"line_end":6,"reasoning":"Pattern matched on line 6: Actuation  |  manual lever"}],"conflicts":[],"reasoning":"2 sources agree on Actuation (normalized 'manual'); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"temperature_range_min","label":"Min operating temp","unit":"°C","value":-10,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"temperature_range_min","value":"-10","unit":"°C","confidence":0.95,"method":"table_parse","source_id":"src_datasheet","snippet":"Operating temperature   -10 °C to 80 °C","line_start":9,"line_end":9,"reasoning":"Pattern matched on line 9: Operating temperature   -10 °C to 80 °C"},{"field":"temperature_range_min","value":"-10","unit":"°C","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Operating temperature  |  -10 °C to 80 °C","line_start":7,"line_end":7,"reasoning":"Pattern matched on line 7: Operating temperature  |  -10 °C to 80 °C"}],"conflicts":[],"reasoning":"2 sources agree on Min operating temp (normalized -10.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"temperature_range_max","label":"Max operating temp","unit":"°C","value":80,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"temperature_range_max","value":"80","unit":"°C","confidence":0.95,"method":"table_parse","source_id":"src_datasheet","snippet":"Operating temperature   -10 °C to 80 °C","line_start":9,"line_end":9,"reasoning":"Pattern matched on line 9: Operating temperature   -10 °C to 80 °C"},{"field":"temperature_range_max","value":"80","unit":"°C","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Operating temperature  |  -10 °C to 80 °C","line_start":7,"line_end":7,"reasoning":"Pattern matched on line 7: Operating temperature  |  -10 °C to 80 °C"}],"conflicts":[],"reasoning":"2 sources agree on Max operating temp (normalized 80.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"weight","label":"Weight","unit":"kg","value":0.9,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"weight","value":"0.9","unit":"kg","confidence":0.95,"method":"table_parse","source_id":"src_datasheet","snippet":"Weight   0.9 kg","line_start":10,"line_end":10,"reasoning":"Pattern matched on line 10: Weight   0.9 kg"},{"field":"weight","value":"0.9","unit":"kg","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Weight  |  0.9 kg","line_start":8,"line_end":8,"reasoning":"Pattern matched on line 8: Weight  |  0.9 kg"}],"conflicts":[],"reasoning":"2 sources agree on Weight (normalized 0.9); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]}],"validation":{"passed":true,"rules_run":10,"issues":[],"note":"Explicit category rule table (not ML); rules only run on extracted fields."},"needs_review_queue":[],"marketing":{"description":"The V2000-BS is a brass manual two-way ball valve with a 25 mm connection, rated to 40 bar. Operating temperature range is -10 °C to 80 °C. The unit weighs 0.9 kg.","citations":[{"field":"part_number","label":"Part number","value":"V2000-BS","sources":[{"source_id":"src_datasheet","snippet":"Part no.   V2000-BS"},{"source_id":"src_web","snippet":"V2000-BS Two-Way Ball Valve"}]},{"field":"body_material","label":"Body material","value":"brass","sources":[{"source_id":"src_datasheet","snippet":"Body material   brass"},{"source_id":"src_web","snippet":"Body material  |  brass"}]},{"field":"actuation","label":"Actuation","value":"manual","sources":[{"source_id":"src_datasheet","snippet":"Actuation   manual"},{"source_id":"src_web","snippet":"Actuation  |  manual lever"}]},{"field":"connection_size","label":"Connection size (DN)","value":"25","sources":[{"source_id":"src_datasheet","snippet":"DN [mm]   25"},{"source_id":"src_web","snippet":"Connection  |  DN 25 mm"}]},{"field":"pressure_rating","label":"Pressure rating (PN)","value":"40","sources":[{"source_id":"src_datasheet","snippet":"Pressure rating   40 bar"},{"source_id":"src_web","snippet":"Pressure rating  |  PN 40 bar"}]},{"field":"temperature_range_min","label":"Min operating temp","value":"-10","sources":[{"source_id":"src_datasheet","snippet":"Operating temperature   -10 °C to 80 °C"},{"source_id":"src_web","snippet":"Operating temperature  |  -10 °C to 80 °C"}]},{"field":"temperature_range_max","label":"Max operating temp","value":"80","sources":[{"source_id":"src_datasheet","snippet":"Operating temperature   -10 °C to 80 °C"},{"source_id":"src_web","snippet":"Operating temperature  |  -10 °C to 80 °C"}]},{"field":"weight","label":"Weight","value":"0.9","sources":[{"source_id":"src_datasheet","snippet":"Weight   0.9 kg"},{"source_id":"src_web","snippet":"Weight  |  0.9 kg"}]}],"sentences_skipped":[],"note":"Marketing copy only cites verified fields; needs_review fields are never auto-published."},"summary":{"total_fields_in_schema":9,"extracted":9,"omitted_not_found":[],"verified":9,"needs_review":0,"conflicts":0,"rules_run":10},"ai_review":{"mode":"mock","provider_note":"deterministic template review (offline)","reviews":[],"summary":"No fields were routed to review - every extracted field was verified.","fields_reviewed":0,"all_clear":true}},"ME-132S-4":{"product_id":"ME-132S-4","category":"electric_motor","category_label":"Three-phase induction motor","pipeline":{"version":"1.0.0","mode":"mock","provider_note":"deterministic mock (offline)","run_at":"2026-08-08T18:50:26+00:00"},"sources":[{"id":"src_pdf","type":"pdf","title":"Datasheet ME-132S-4 (IEC 60034, p.1)","authority":0.95,"lines":14,"fields_extracted":13,"path":"data/sample_motor/motor_datasheet.txt"},{"id":"src_web","type":"web","title":"Manufacturer product page - ME-132S-4","authority":0.85,"lines":12,"fields_extracted":11,"path":"data/sample_motor/motor_webpage.html"},{"id":"src_ocr","type":"ocr","title":"Nameplate photo OCR (stamping on terminal box)","authority":0.7,"lines":7,"fields_extracted":7,"path":"data/sample_motor/motor_photo_ocr.txt"}],"fields":[{"field":"part_number","label":"Part number","unit":null,"value":"ME-132S-4","confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"part_number","value":"ME-132S-4","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Part no.  ME-132S-4","line_start":1,"line_end":1,"reasoning":"Pattern matched on line 1: Part no.  ME-132S-4"},{"field":"part_number","value":"ME-132S-4","unit":null,"confidence":0.85,"method":"llm_inference","source_id":"src_web","snippet":"ME-132S-4 Induction Motor","line_start":1,"line_end":1,"reasoning":"Pattern matched on line 1: ME-132S-4 Induction Motor"},{"field":"part_number","value":"ME-132S-4","unit":null,"confidence":0.7,"method":"ocr_heuristic","source_id":"src_ocr","snippet":"ME-132S-4","line_start":1,"line_end":1,"reasoning":"Pattern matched on line 1: ME-132S-4"}],"conflicts":[],"reasoning":"3 sources agree on Part number (normalized 'me-132s-4'); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"brand","label":"Brand","unit":null,"value":"VoltTech","confidence":0.857,"status":"verified","flags":["single_source"],"sources":[{"field":"brand","value":"VoltTech","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Brand  VoltTech","line_start":2,"line_end":2,"reasoning":"Pattern matched on line 2: Brand  VoltTech"}],"conflicts":[],"reasoning":"Single source (src_pdf) provides Brand; effective confidence 0.86.","dropped":[],"validation_issues":[]},{"field":"power_kw","label":"Rated output power","unit":"kW","value":7.5,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"power_kw","value":"7.5","unit":"kW","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Output power  7.5 kW","line_start":4,"line_end":4,"reasoning":"Pattern matched on line 4: Output power  7.5 kW"},{"field":"power_kw","value":"7.5","unit":"kW","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Output power  |  7.5 kW","line_start":3,"line_end":3,"reasoning":"Pattern matched on line 3: Output power  |  7.5 kW"},{"field":"power_kw","value":"7.5","unit":"kW","confidence":0.7,"method":"ocr_heuristic","source_id":"src_ocr","snippet":"7.5 kW","line_start":2,"line_end":2,"reasoning":"Pattern matched on line 2: 7.5 kW"}],"conflicts":[],"reasoning":"3 sources agree on Rated output power (normalized 7.5); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"rated_voltage","label":"Rated voltage","unit":"V","value":400,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"rated_voltage","value":"400","unit":"V","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Rated voltage  400 V","line_start":5,"line_end":5,"reasoning":"Pattern matched on line 5: Rated voltage  400 V"},{"field":"rated_voltage","value":"400","unit":"V","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Voltage  |  400 V","line_start":4,"line_end":4,"reasoning":"Pattern matched on line 4: Voltage  |  400 V"},{"field":"rated_voltage","value":"400","unit":"V","confidence":0.7,"method":"ocr_heuristic","source_id":"src_ocr","snippet":"400 V","line_start":3,"line_end":3,"reasoning":"Pattern matched on line 3: 400 V"}],"conflicts":[],"reasoning":"3 sources agree on Rated voltage (normalized 400.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"rated_current","label":"Rated current","unit":"A","value":15.2,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"rated_current","value":"15.2","unit":"A","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Rated current  15.2 A","line_start":6,"line_end":6,"reasoning":"Pattern matched on line 6: Rated current  15.2 A"},{"field":"rated_current","value":"15.2","unit":"A","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Rated current  |  15.2 A","line_start":5,"line_end":5,"reasoning":"Pattern matched on line 5: Rated current  |  15.2 A"}],"conflicts":[],"reasoning":"2 sources agree on Rated current (normalized 15.2); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"rated_speed","label":"Rated speed","unit":"rpm","value":1450,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"rated_speed","value":"1450","unit":"rpm","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Rated speed  1450 r/min","line_start":7,"line_end":7,"reasoning":"Pattern matched on line 7: Rated speed  1450 r/min"},{"field":"rated_speed","value":"1450","unit":"rpm","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Rated speed  |  1450 rpm","line_start":6,"line_end":6,"reasoning":"Pattern matched on line 6: Rated speed  |  1450 rpm"},{"field":"rated_speed","value":"1450","unit":"rpm","confidence":0.7,"method":"ocr_heuristic","source_id":"src_ocr","snippet":"1450 r/min","line_start":4,"line_end":4,"reasoning":"Pattern matched on line 4: 1450 r/min"}],"conflicts":[],"reasoning":"3 sources agree on Rated speed (normalized 1450.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"efficiency","label":"Efficiency","unit":"%","value":90.5,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"efficiency","value":"90.5","unit":"%","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Efficiency  90.5 %","line_start":9,"line_end":9,"reasoning":"Pattern matched on line 9: Efficiency  90.5 %"},{"field":"efficiency","value":"90.5","unit":"%","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Efficiency  |  90.5%","line_start":7,"line_end":7,"reasoning":"Pattern matched on line 7: Efficiency  |  90.5%"}],"conflicts":[],"reasoning":"2 sources agree on Efficiency (normalized 90.5); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"frequency","label":"Frequency","unit":"Hz","value":50,"confidence":0.857,"status":"verified","flags":["single_source"],"sources":[{"field":"frequency","value":"50","unit":"Hz","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Frequency  50 Hz","line_start":8,"line_end":8,"reasoning":"Pattern matched on line 8: Frequency  50 Hz"}],"conflicts":[],"reasoning":"Single source (src_pdf) provides Frequency; effective confidence 0.86.","dropped":[],"validation_issues":[]},{"field":"frame_size","label":"Frame size","unit":null,"value":"132S","confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"frame_size","value":"132S","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Frame size  132S","line_start":10,"line_end":10,"reasoning":"Pattern matched on line 10: Frame size  132S"},{"field":"frame_size","value":"132S","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Frame size  |  132S","line_start":8,"line_end":8,"reasoning":"Pattern matched on line 8: Frame size  |  132S"}],"conflicts":[],"reasoning":"2 sources agree on Frame size (normalized '132S'); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"protection_class","label":"Protection class","unit":null,"value":"IP55","confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"protection_class","value":"IP55","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Protection  IP55","line_start":11,"line_end":11,"reasoning":"Pattern matched on line 11: Protection  IP55"},{"field":"protection_class","value":"IP55","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Protection  |  IP55","line_start":9,"line_end":9,"reasoning":"Pattern matched on line 9: Protection  |  IP55"},{"field":"protection_class","value":"IP55","unit":null,"confidence":0.7,"method":"ocr_heuristic","source_id":"src_ocr","snippet":"IP55","line_start":5,"line_end":5,"reasoning":"Pattern matched on line 5: IP55"}],"conflicts":[],"reasoning":"3 sources agree on Protection class (normalized 'IP55'); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"insulation_class","label":"Insulation class","unit":null,"value":"F","confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"insulation_class","value":"F","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Insulation class  F","line_start":12,"line_end":12,"reasoning":"Pattern matched on line 12: Insulation class  F"},{"field":"insulation_class","value":"F","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Insulation  |  Class F","line_start":10,"line_end":10,"reasoning":"Pattern matched on line 10: Insulation  |  Class F"},{"field":"insulation_class","value":"F","unit":null,"confidence":0.6,"method":"ocr_heuristic","source_id":"src_ocr","snippet":"F","line_start":6,"line_end":6,"reasoning":"Pattern matched on line 6: F"}],"conflicts":[],"reasoning":"3 sources agree on Insulation class (normalized 'F'); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"mounting","label":"Mounting","unit":null,"value":"B3","confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"mounting","value":"B3","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Mounting  B3","line_start":13,"line_end":13,"reasoning":"Pattern matched on line 13: Mounting  B3"},{"field":"mounting","value":"B3","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Mounting  |  B3","line_start":11,"line_end":11,"reasoning":"Pattern matched on line 11: Mounting  |  B3"},{"field":"mounting","value":"B3","unit":null,"confidence":0.6,"method":"ocr_heuristic","source_id":"src_ocr","snippet":"B3","line_start":7,"line_end":7,"reasoning":"Pattern matched on line 7: B3"}],"conflicts":[],"reasoning":"3 sources agree on Mounting (normalized 'B3'); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"weight","label":"Weight","unit":"kg","value":62,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"weight","value":"62","unit":"kg","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Mass  62 kg","line_start":14,"line_end":14,"reasoning":"Pattern matched on line 14: Mass  62 kg"},{"field":"weight","value":"62","unit":"kg","confidence":0.95,"method":"table_parse","source_id":"src_web","snippet":"Weight  |  62 kg","line_start":12,"line_end":12,"reasoning":"Pattern matched on line 12: Weight  |  62 kg"}],"conflicts":[],"reasoning":"2 sources agree on Weight (normalized 62.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]}],"validation":{"passed":true,"rules_run":15,"issues":[],"note":"Explicit category rule table (not ML); rules only run on extracted fields."},"needs_review_queue":[],"marketing":{"description":"The ME-132S-4 is an F-class, IP55 three-phase induction motor rated 7.5 kW at 1450 rpm. It runs on 400 V at 50 Hz, drawing 15.2 A at 90.5% efficiency. The unit weighs 62 kg.","citations":[{"field":"part_number","label":"Part number","value":"ME-132S-4","sources":[{"source_id":"src_pdf","snippet":"Part no.  ME-132S-4"},{"source_id":"src_web","snippet":"ME-132S-4 Induction Motor"},{"source_id":"src_ocr","snippet":"ME-132S-4"}]},{"field":"insulation_class","label":"Insulation class","value":"F","sources":[{"source_id":"src_pdf","snippet":"Insulation class  F"},{"source_id":"src_web","snippet":"Insulation  |  Class F"},{"source_id":"src_ocr","snippet":"F"}]},{"field":"protection_class","label":"Protection class","value":"IP55","sources":[{"source_id":"src_pdf","snippet":"Protection  IP55"},{"source_id":"src_web","snippet":"Protection  |  IP55"},{"source_id":"src_ocr","snippet":"IP55"}]},{"field":"power_kw","label":"Rated output power","value":"7.5","sources":[{"source_id":"src_pdf","snippet":"Output power  7.5 kW"},{"source_id":"src_web","snippet":"Output power  |  7.5 kW"},{"source_id":"src_ocr","snippet":"7.5 kW"}]},{"field":"rated_speed","label":"Rated speed","value":"1450","sources":[{"source_id":"src_pdf","snippet":"Rated speed  1450 r/min"},{"source_id":"src_web","snippet":"Rated speed  |  1450 rpm"},{"source_id":"src_ocr","snippet":"1450 r/min"}]},{"field":"rated_voltage","label":"Rated voltage","value":"400","sources":[{"source_id":"src_pdf","snippet":"Rated voltage  400 V"},{"source_id":"src_web","snippet":"Voltage  |  400 V"},{"source_id":"src_ocr","snippet":"400 V"}]},{"field":"frequency","label":"Frequency","value":"50","sources":[{"source_id":"src_pdf","snippet":"Frequency  50 Hz"}]},{"field":"rated_current","label":"Rated current","value":"15.2","sources":[{"source_id":"src_pdf","snippet":"Rated current  15.2 A"},{"source_id":"src_web","snippet":"Rated current  |  15.2 A"}]},{"field":"efficiency","label":"Efficiency","value":"90.5","sources":[{"source_id":"src_pdf","snippet":"Efficiency  90.5 %"},{"source_id":"src_web","snippet":"Efficiency  |  90.5%"}]},{"field":"weight","label":"Weight","value":"62","sources":[{"source_id":"src_pdf","snippet":"Mass  62 kg"},{"source_id":"src_web","snippet":"Weight  |  62 kg"}]}],"sentences_skipped":[],"note":"Marketing copy only cites verified fields; needs_review fields are never auto-published."},"summary":{"total_fields_in_schema":13,"extracted":13,"omitted_not_found":[],"verified":13,"needs_review":0,"conflicts":0,"rules_run":15},"ai_review":{"mode":"mock","provider_note":"deterministic template review (offline)","reviews":[],"summary":"No fields were routed to review - every extracted field was verified.","fields_reviewed":0,"all_clear":true}},"GRX-225-M":{"product_id":"GRX-225-M","category":"helical_gear_reducer","category_label":"Helical gear reducer","pipeline":{"version":"1.0.0","mode":"mock","provider_note":"deterministic mock (offline)","run_at":"2026-08-08T18:50:26+00:00"},"sources":[{"id":"src_pdf","type":"pdf","title":"Datasheet GRX-225-M (rev 2, p.1)","authority":0.95,"lines":13,"fields_extracted":12,"path":"data/sample_gearbox/gearbox_datasheet.txt"},{"id":"src_web","type":"web","title":"Distributor product page - GRX-225-M","authority":0.85,"lines":12,"fields_extracted":11,"path":"data/sample_gearbox/gearbox_webpage.html"},{"id":"src_ocr","type":"ocr","title":"Nameplate photo OCR (stamping on gear case)","authority":0.7,"lines":5,"fields_extracted":5,"path":"data/sample_gearbox/gearbox_photo_ocr.txt"}],"fields":[{"field":"part_number","label":"Part number","unit":null,"value":"GRX-225-M","confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"part_number","value":"GRX-225-M","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Part no.  GRX-225-M","line_start":1,"line_end":1,"reasoning":"Pattern matched on line 1: Part no.  GRX-225-M"},{"field":"part_number","value":"GRX-225-M","unit":null,"confidence":0.85,"method":"llm_inference","source_id":"src_web","snippet":"GRX-225-M Gear Reducer","line_start":1,"line_end":1,"reasoning":"Pattern matched on line 1: GRX-225-M Gear Reducer"},{"field":"part_number","value":"GRX-225-M","unit":null,"confidence":0.7,"method":"ocr_heuristic","source_id":"src_ocr","snippet":"GRX-225-M","line_start":1,"line_end":1,"reasoning":"Pattern matched on line 1: GRX-225-M"}],"conflicts":[],"reasoning":"3 sources agree on Part number (normalized 'grx-225-m'); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"brand","label":"Brand","unit":null,"value":"HelmDrive","confidence":0.857,"status":"verified","flags":["single_source"],"sources":[{"field":"brand","value":"HelmDrive","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Brand  HelmDrive","line_start":2,"line_end":2,"reasoning":"Pattern matched on line 2: Brand  HelmDrive"}],"conflicts":[],"reasoning":"Single source (src_pdf) provides Brand; effective confidence 0.86.","dropped":[],"validation_issues":[]},{"field":"ratio","label":"Gear ratio","unit":null,"value":25,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"ratio","value":"25","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Ratio  25 : 1","line_start":4,"line_end":4,"reasoning":"Pattern matched on line 4: Ratio  25 : 1"},{"field":"ratio","value":"25","unit":null,"confidence":0.9,"method":"table_parse","source_id":"src_web","snippet":"Ratio  |  25 : 1","line_start":3,"line_end":3,"reasoning":"Pattern matched on line 3: Ratio  |  25 : 1"},{"field":"ratio","value":"25","unit":null,"confidence":0.7,"method":"ocr_heuristic","source_id":"src_ocr","snippet":"25 : 1","line_start":2,"line_end":2,"reasoning":"Pattern matched on line 2: 25 : 1"}],"conflicts":[],"reasoning":"3 sources agree on Gear ratio (normalized 25.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"input_speed","label":"Input speed","unit":"rpm","value":1450,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"input_speed","value":"1450","unit":"rpm","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Input speed  1450 r/min","line_start":5,"line_end":5,"reasoning":"Pattern matched on line 5: Input speed  1450 r/min"},{"field":"input_speed","value":"1450","unit":"rpm","confidence":0.9,"method":"table_parse","source_id":"src_web","snippet":"Input speed  |  1450 rpm","line_start":4,"line_end":4,"reasoning":"Pattern matched on line 4: Input speed  |  1450 rpm"}],"conflicts":[],"reasoning":"2 sources agree on Input speed (normalized 1450.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"output_speed","label":"Output speed","unit":"rpm","value":null,"confidence":0.4,"status":"needs_review","flags":["conflict"],"sources":[{"field":"output_speed","value":"58","unit":"rpm","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Output speed  58 r/min","line_start":6,"line_end":6,"reasoning":"Pattern matched on line 6: Output speed  58 r/min"},{"field":"output_speed","value":"60","unit":"rpm","confidence":0.9,"method":"table_parse","source_id":"src_web","snippet":"Output speed  |  60 rpm","line_start":5,"line_end":5,"reasoning":"Pattern matched on line 5: Output speed  |  60 rpm"}],"conflicts":[{"field":"output_speed","reason":"Sources disagree on Output speed: src_pdf=58 rpm; src_web=60 rpm","values":[{"source_id":"src_pdf","value":"58","unit":"rpm"},{"source_id":"src_web","value":"60","unit":"rpm"}]}],"reasoning":"Sources disagree on Output speed: src_pdf=58 rpm; src_web=60 rpm","dropped":[],"validation_issues":[]},{"field":"rated_torque","label":"Rated torque","unit":"Nm","value":450,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"rated_torque","value":"450","unit":"N·m","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Rated torque  450 N·m","line_start":7,"line_end":7,"reasoning":"Pattern matched on line 7: Rated torque  450 N·m"},{"field":"rated_torque","value":"332","unit":"ft-lb","confidence":0.9,"method":"table_parse","source_id":"src_web","snippet":"Rated torque  |  332 ft-lb","line_start":6,"line_end":6,"reasoning":"Pattern matched on line 6: Rated torque  |  332 ft-lb"},{"field":"rated_torque","value":"450","unit":"Nm","confidence":0.7,"method":"ocr_heuristic","source_id":"src_ocr","snippet":"450 N·m","line_start":3,"line_end":3,"reasoning":"Pattern matched on line 3: 450 N·m"}],"conflicts":[],"reasoning":"3 sources agree on Rated torque (normalized 450.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"service_factor","label":"Service factor","unit":null,"value":1.4,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"service_factor","value":"1.4","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Service factor  1.4","line_start":8,"line_end":8,"reasoning":"Pattern matched on line 8: Service factor  1.4"},{"field":"service_factor","value":"1.4","unit":null,"confidence":0.9,"method":"table_parse","source_id":"src_web","snippet":"Service factor  |  1.4","line_start":7,"line_end":7,"reasoning":"Pattern matched on line 7: Service factor  |  1.4"}],"conflicts":[],"reasoning":"2 sources agree on Service factor (normalized 1.4); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"efficiency","label":"Efficiency","unit":"%","value":94,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"efficiency","value":"94","unit":"%","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Efficiency  94 %","line_start":9,"line_end":9,"reasoning":"Pattern matched on line 9: Efficiency  94 %"},{"field":"efficiency","value":"94","unit":"%","confidence":0.9,"method":"table_parse","source_id":"src_web","snippet":"Efficiency  |  94%","line_start":8,"line_end":8,"reasoning":"Pattern matched on line 8: Efficiency  |  94%"}],"conflicts":[],"reasoning":"2 sources agree on Efficiency (normalized 94.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"mounting","label":"Mounting","unit":null,"value":"B3","confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"mounting","value":"B3","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Mounting  B3","line_start":10,"line_end":10,"reasoning":"Pattern matched on line 10: Mounting  B3"},{"field":"mounting","value":"B3","unit":null,"confidence":0.9,"method":"table_parse","source_id":"src_web","snippet":"Mounting  |  B3","line_start":9,"line_end":9,"reasoning":"Pattern matched on line 9: Mounting  |  B3"}],"conflicts":[],"reasoning":"2 sources agree on Mounting (normalized 'B3'); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"protection_class","label":"Protection class","unit":null,"value":"IP55","confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"protection_class","value":"IP55","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Protection  IP55","line_start":11,"line_end":11,"reasoning":"Pattern matched on line 11: Protection  IP55"},{"field":"protection_class","value":"IP55","unit":null,"confidence":0.9,"method":"table_parse","source_id":"src_web","snippet":"Protection  |  IP55","line_start":10,"line_end":10,"reasoning":"Pattern matched on line 10: Protection  |  IP55"},{"field":"protection_class","value":"IP55","unit":null,"confidence":0.7,"method":"ocr_heuristic","source_id":"src_ocr","snippet":"IP55","line_start":4,"line_end":4,"reasoning":"Pattern matched on line 4: IP55"}],"conflicts":[],"reasoning":"3 sources agree on Protection class (normalized 'IP55'); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"lubrication","label":"Lubrication","unit":null,"value":"oil","confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"lubrication","value":"oil","unit":null,"confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Lubrication  oil","line_start":12,"line_end":12,"reasoning":"Pattern matched on line 12: Lubrication  oil"},{"field":"lubrication","value":"oil","unit":null,"confidence":0.9,"method":"table_parse","source_id":"src_web","snippet":"Lubrication  |  oil","line_start":11,"line_end":11,"reasoning":"Pattern matched on line 11: Lubrication  |  oil"}],"conflicts":[],"reasoning":"2 sources agree on Lubrication (normalized 'oil'); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]},{"field":"weight","label":"Weight","unit":"kg","value":62,"confidence":0.98,"status":"verified","flags":["multi_source"],"sources":[{"field":"weight","value":"62","unit":"kg","confidence":0.95,"method":"table_parse","source_id":"src_pdf","snippet":"Mass  62 kg","line_start":13,"line_end":13,"reasoning":"Pattern matched on line 13: Mass  62 kg"},{"field":"weight","value":"62","unit":"kg","confidence":0.9,"method":"table_parse","source_id":"src_web","snippet":"Weight  |  62 kg","line_start":12,"line_end":12,"reasoning":"Pattern matched on line 12: Weight  |  62 kg"},{"field":"weight","value":"62","unit":"kg","confidence":0.7,"method":"ocr_heuristic","source_id":"src_ocr","snippet":"62 kg","line_start":5,"line_end":5,"reasoning":"Pattern matched on line 5: 62 kg"}],"conflicts":[],"reasoning":"3 sources agree on Weight (normalized 62.0); confidence boosted from 0.90 to 0.98.","dropped":[],"validation_issues":[]}],"validation":{"passed":true,"rules_run":11,"issues":[],"note":"Explicit category rule table (not ML); rules only run on extracted fields."},"needs_review_queue":[{"field":"output_speed","label":"Output speed","confidence":0.4,"flags":["conflict"],"reason":"Sources disagree on Output speed: src_pdf=58 rpm; src_web=60 rpm","value":null,"sources":["src_pdf","src_web"]}],"marketing":{"description":"","citations":[],"sentences_skipped":[],"note":"Marketing copy only cites verified fields; needs_review fields are never auto-published."},"summary":{"total_fields_in_schema":12,"extracted":12,"omitted_not_found":[],"verified":11,"needs_review":1,"conflicts":1,"rules_run":11},"ai_review":{"mode":"mock","provider_note":"deterministic template review (offline)","reviews":[{"field":"output_speed","label":"Output speed","flags":["conflict"],"confidence":0.4,"value":null,"review":"Cross-source conflict on Output speed: Sources disagree on Output speed: src_pdf=58 rpm; src_web=60 rpm. The values disagree beyond the 1% (relative, with a 0.05 absolute floor) agreement tolerance, so neither can be auto-published without human judgment.","suggested_action":"Check the highest-authority source (Datasheet GRX-225-M (rev 2, p.1) (authority 0.95), Distributor product page - GRX-225-M (authority 0.85)) for a typo or a different operating condition, then record the single correct value."}],"summary":"Reviewed 1 field(s): 1 conflict(s), 0 low-confidence, 0 validation. None can auto-publish until resolved.","fields_reviewed":1,"all_clear":false}}};
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+const fmtNum = (v) => {
+  if (typeof v !== "number") return String(v);
+  const n = Math.round(v * 1000) / 1000;
+  return String(n);
+};
+const confColor = (c) => c >= 0.9 ? "var(--ok)" : c >= 0.75 ? "var(--warn)" : "var(--bad)";
+const confClass = (c) => c >= 0.9 ? "ok" : c >= 0.75 ? "warn" : "bad";
+
+const state = { data: null, initialData: null, status: "all", search: "", auditLog: [], catStatus: "all" };
+
+// Enterprise reviewer personas — the active role is stamped onto every audit
+// trail entry (resolution_audit, audit-log CSV, resolved-card meta) with no
+// login wall. Persisted across reloads.
+const PERSONAS = {
+  catalog:    { label: "Senior Catalog Engineer", icon: "🧑‍💼" },
+  compliance: { label: "Compliance Officer",       icon: "🛡️" },
+  bot:        { label: "Automated Pipeline Bot",    icon: "🤖" }
+};
+let persona = "catalog";
+try { persona = localStorage.getItem("partintel_persona") || "catalog"; } catch (e) {}
+const personaObj = () => PERSONAS[persona] || PERSONAS.catalog;
+function toastMsg(text, ms) {
+  const t = $("toast");
+  t.innerHTML = '<div><div class="tt">Persona</div><div>' + text + '</div></div><button id="toastClose">✕</button>';
+  t.classList.add("show");
+  const close = () => t.classList.remove("show");
+  t.querySelector("#toastClose").addEventListener("click", close);
+  setTimeout(close, ms || 4000);
+}
+function setPersona(key) {
+  if (!PERSONAS[key]) return;
+  persona = key;
+  try { localStorage.setItem("partintel_persona", key); } catch (e) {}
+  const ic = $("personaIc"); if (ic) ic.textContent = personaObj().icon;
+  const sel = $("personaSel"); if (sel) sel.value = key;
+  renderQueue();
+  renderFields();
+  toastMsg("Now acting as <b>" + esc(personaObj().label) + "</b> — future audit entries tagged with this role");
+}
+if ($("personaSel")) {
+  $("personaSel").value = persona;
+  $("personaSel").addEventListener("change", (e) => setPersona(e.target.value));
+  const ic = $("personaIc"); if (ic) ic.textContent = personaObj().icon;
+}
+const CATALOG_DATA = (typeof CATALOG !== "undefined" && CATALOG) ? CATALOG : null;
+const RECORDS_MAP = (typeof RECORDS !== "undefined" && RECORDS) ? RECORDS : {};
+
+const TYPE_ICON = { pdf: "PDF", web: "WEB", ocr: "OCR" };
+const TYPE_LABEL = { pdf: "PDF datasheet", web: "Manufacturer page", ocr: "Photo OCR" };
+
+const MKT_TEMPLATES = {
+  deep_groove_ball_bearing: [
+    {
+      req: ["part_number", "seal_type", "bore_diameter", "outer_diameter", "width"],
+      tpl: "The {{part_number}} is a sealed deep groove ball bearing with a {{bore_diameter}} mm bore, {{outer_diameter}} mm outer diameter and {{width}} mm width."
+    },
+    {
+      req: ["dynamic_load_rating", "static_load_rating"],
+      tpl: "It is rated for a dynamic load of {{dynamic_load_rating}} kN and a static load of {{static_load_rating}} kN."
+    },
+    {
+      req: ["max_speed"],
+      tpl: "Maximum limiting speed is {{max_speed}} rpm."
+    },
+    {
+      req: ["temperature_range_min", "temperature_range_max"],
+      tpl: "Operating temperature range is {{temperature_range_min}} °C to {{temperature_range_max}} °C."
+    },
+    {
+      req: ["weight"],
+      tpl: "The unit weighs {{weight}} kg."
+    }
+  ],
+  "2_way_ball_valve": [
+    {
+      req: ["part_number", "body_material", "actuation", "connection_size", "pressure_rating"],
+      tpl: "The {{part_number}} is a {{body_material}} {{actuation}} two-way ball valve with a {{connection_size}} mm connection, rated to {{pressure_rating}} bar."
+    },
+    {
+      req: ["temperature_range_min", "temperature_range_max"],
+      tpl: "Operating temperature range is {{temperature_range_min}} °C to {{temperature_range_max}} °C."
+    },
+    {
+      req: ["weight"],
+      tpl: "The unit weighs {{weight}} kg."
+    }
+  ],
+  electric_motor: [
+    {
+      req: ["part_number", "insulation_class", "protection_class", "power_kw", "rated_speed"],
+      tpl: "The {{part_number}} is an {{insulation_class}}-class, {{protection_class}} three-phase induction motor rated {{power_kw}} kW at {{rated_speed}} rpm."
+    },
+    {
+      req: ["rated_voltage", "frequency", "rated_current", "efficiency"],
+      tpl: "It runs on {{rated_voltage}} V at {{frequency}} Hz, drawing {{rated_current}} A at {{efficiency}}% efficiency."
+    },
+    {
+      req: ["weight"],
+      tpl: "The unit weighs {{weight}} kg."
+    }
+  ]
+};
+
+function byField(field) { return state.data.fields.find(f => f.field === field); }
+
+function renderHeader() {
+  const d = state.data, s = d.summary;
+  $("prodName").textContent = d.product_id;
+  $("prodCat").textContent = d.category_label || d.category;
+  $("stVerified").textContent = s.verified;
+  $("stReview").textContent = s.needs_review;
+  $("stConflict").textContent = s.conflicts;
+  $("stOmitted").textContent = s.omitted_not_found.length;
+  
+  let pMode = d.pipeline.mode;
+  if (d.pipeline.provider_note) pMode += " (" + d.pipeline.provider_note.replace("deterministic mock (offline)", "offline") + ")";
+  $("stMode").textContent = pMode;
+  $("stValid").textContent = d.validation.passed ? "PASSED" : "FAILED";
+  $("stValid").className = "okv";
+  if (!d.validation.passed) $("stValid").style.color = "var(--bad)";
+  $("stRules").textContent = d.validation.rules_run + " rules";
+  $("qCount").textContent = s.needs_review;
+  $("qCount").className = "pill " + (s.conflicts ? "bad" : s.needs_review ? "warn" : "ok");
+  $("fMode").textContent = "pipeline " + d.pipeline.mode + " · " + d.pipeline.version;
+  $("fValid").textContent = "validation " + (d.validation.passed ? "passed" : "failed") + " (" + d.validation.rules_run + " rules)";
+  $("fRules").textContent = "schema fields: " + s.total_fields_in_schema + ", extracted: " + s.extracted;
+  $("fTime").textContent = "run " + (d.pipeline.run_at || "").replace("T", " ").replace("Z", " UTC");
+  const n = (arr) => arr.length;
+  $("nAll").textContent = d.fields.length;
+  $("nVer").textContent = n(d.fields.filter(f => f.status === "verified"));
+  $("nRev").textContent = n(d.fields.filter(f => f.status === "needs_review"));
+  $("nConf").textContent = n(d.fields.filter(f => f.flags.includes("conflict") && f.status !== "verified"));
+}
+
+function statusBadge(f) {
+  if (f.resolution_audit) return '<span class="badge ok">✓ human resolved</span>';
+  if (f.flags.includes("conflict")) return '<span class="badge bad">⚡ conflict</span>';
+  if (f.status === "verified") return '<span class="badge ok">✓ verified</span>';
+  return '<span class="badge warn">! needs review</span>';
+}
+
+function valueCell(f) {
+  if (f.conflicts && f.conflicts.length && f.status !== "verified") {
+    const vals = f.conflicts.flatMap(c => c.values);
+    const chips = vals.map(v =>
+      '<span>' + esc(fmtNum(v.value)) + '<span class="unit">' + esc(v.unit || "") + '</span></span>'
+    ).join('<span class="vs">vs</span>');
+    return '<span class="fvalue conflict">' + chips + '</span>';
+  }
+  if (f.value === null || f.value === undefined) return '<span class="fvalue">—</span>';
+  return '<span class="fvalue">' + esc(fmtNum(f.value)) +
+    (f.unit ? '<span class="unit">' + esc(f.unit) + '</span>' : '') + '</span>';
+}
+
+function confCell(f) {
+  const c = f.confidence;
+  return '<div class="confcell"><div class="confbar"><i style="width:' + (c * 100) +
+    '%;background:' + confColor(c) + '"></i></div><span class="confpct" style="color:' +
+    confColor(c) + '">' + (c * 100).toFixed(0) + '%</span></div>';
+}
+
+function methodBadge(m) {
+  const short = m === "table_parse" ? "table_parse" : m === "ocr_heuristic" ? "ocr_heuristic" : m === "human_review" ? "human_review" : "llm_inference";
+  return '<span class="method">' + short + '</span>';
+}
+
+function srcChips(f) {
+  const types = {};
+  f.sources.forEach(s => { types[s.source_id] = srcType(s.source_id); });
+  const seen = [];
+  const chips = f.sources.map(s => {
+    const t = types[s.source_id] || "";
+    if (seen.includes(s.source_id)) return "";
+    seen.push(s.source_id);
+    return '<span class="schip ' + t + '">' + (TYPE_ICON[t] || "SRC") + '</span>';
+  }).join("");
+  return '<div class="srcchips">' + chips + '</div>';
+}
+
+function renderFields() {
+  const body = $("fieldsBody");
+  const q = state.search.toLowerCase();
+  const fields = state.data.fields.filter(f => {
+    const sOk = state.status === "all" ||
+      (state.status === "conflict" ? (f.flags.includes("conflict") && f.status !== "verified") : f.status === state.status);
+    const tOk = !q || (f.label + " " + f.field + " " + fmtNum(f.value)).toLowerCase().includes(q);
+    return sOk && tOk;
+  });
+  $("fieldsEmpty").style.display = fields.length ? "none" : "block";
+  body.innerHTML = fields.map(f => {
+    const flags = f.resolution_audit ? ' <span class="flag ok">human verified</span>' :
+      (f.flags.includes("conflict") && f.status !== "verified" ? ' <span class="flag conflict">conflict</span>' :
+      (f.flags.includes("low_confidence") && f.status !== "verified" ? ' <span class="flag low_confidence">low confidence</span>' : ""));
+    const primaryMethod = f.sources && f.sources.length ? f.sources[0].method : "human_review";
+    return '<tr data-field="' + f.field + '">' +
+      '<td><div class="fname">' + esc(f.label) + flags + '</div>' +
+      '<div class="fdesc">' + esc(f.field) + '</div></td>' +
+      '<td>' + valueCell(f) + '</td>' +
+      '<td>' + confCell(f) + '</td>' +
+      '<td>' + methodBadge(primaryMethod) + '</td>' +
+      '<td>' + srcChips(f) + '</td>' +
+      '<td>' + statusBadge(f) + '</td></tr>';
+  }).join("");
+}
+
+function renderQueue() {
+  const d = state.data;
+  const reviewFields = d.fields.filter(f => f.status === "needs_review" || f.flags.includes("conflict") || f.resolution_audit);
+  const pendingCount = reviewFields.filter(f => f.status !== "verified").length;
+
+  $("qCount").textContent = pendingCount;
+  $("qCount").className = "pill " + (pendingCount === 0 ? "ok" : "warn");
+  $("qHint").textContent = pendingCount
+    ? "Industrial Human-in-the-Loop review: resolve conflicts & approve single-source specifications before publishing."
+    : "All clear — every routed field in this product has been verified or human-adjudicated.";
+
+  if (!reviewFields.length) {
+    $("queueBody").innerHTML = '<div class="empty">Nothing in the review queue for this product.</div>';
+    return;
+  }
+
+  $("queueBody").innerHTML = reviewFields.map(f => {
+    const isResolved = !!f.resolution_audit;
+    const flags = f.flags.map(x => '<span class="flag ' + x + '">' + x.replace(/_/g, " ") + '</span>').join("");
+    const ai = (state.data.ai_review && state.data.ai_review.reviews || []).find(r => r.field === f.field);
+    const aiHtml = ai
+      ? '<div class="qreason ai"><b>🤖 AI Copilot Review:</b> ' + esc(ai.review) +
+        '<br><i><b>Suggested Action:</b> ' + esc(ai.suggested_action) + '</i></div>'
+      : "";
+
+    if (isResolved) {
+      const aud = f.resolution_audit;
+      return '<div class="qcard hitl-resolved" data-q="' + esc(f.field) + '">' +
+        '<div class="qtop"><h3>' + esc(f.label) + '</h3><span class="badge ok">✓ Resolved by Human</span>' +
+        '<div class="qactions">' +
+        '<button class="qbtn" data-open="' + esc(f.field) + '">Inspect Sources</button>' +
+        '<button class="qbtn reset" data-undo="' + esc(f.field) + '">↺ Undo Resolution</button>' +
+        '</div></div>' +
+        '<div class="hitl-audit-summary">' +
+        '<div class="hitl-audit-val">Approved Spec: <b>' + esc(fmtNum(f.value)) + (f.unit ? ' ' + esc(f.unit) : '') + '</b></div>' +
+        '<div class="hitl-audit-meta">By <b>' + esc(aud.reviewer) + '</b>' +
+        (aud.persona ? ' <span class="pers-tag">' + esc(aud.persona) + '</span>' : '') +
+        ' on ' + esc(aud.resolved_at ? aud.resolved_at.replace("T"," ").slice(0,19) : "now") + ' UTC</div>' +
+        '<div class="hitl-audit-reason"><b>Rationale:</b> <i>"' + esc(aud.rationale) + '"</i></div>' +
+        '</div></div>';
+    }
+
+    let candOptions = [];
+    if (f.conflicts && f.conflicts.length) {
+      f.conflicts[0].values.forEach(v => {
+        candOptions.push({
+          source_id: v.source_id,
+          value: v.value,
+          unit: v.unit || f.unit || ""
+        });
+      });
+    } else if (f.sources && f.sources.length) {
+      f.sources.forEach(s => {
+        candOptions.push({
+          source_id: s.source_id,
+          value: s.value,
+          unit: s.unit || f.unit || ""
+        });
+      });
+    }
+
+    const candsHtml = candOptions.map((c, i) =>
+      '<label class="cand-item">' +
+      '<input type="radio" name="cand_' + esc(f.field) + '" value="' + esc(c.value) + '" data-unit="' + esc(c.unit) + '" ' + (i === 0 ? 'checked' : '') + '>' +
+      '<div><span class="cand-src">' + esc(srcTitle(c.source_id)) + '</span>: ' +
+      '<span class="cand-val">' + esc(c.value) + (c.unit ? ' ' + esc(c.unit) : '') + '</span></div>' +
+      '</label>'
+    ).join("");
+
+    return '<div class="qcard hitl-box" data-q="' + esc(f.field) + '">' +
+      '<div class="qtop"><h3>' + esc(f.label) + '</h3>' + flags +
+      '<div class="qactions">' +
+      '<button class="qbtn" data-open="' + esc(f.field) + '">Inspect Sources</button>' +
+      '</div></div>' +
+      '<div class="qreason">' + esc(f.reasoning || "Pending human adjudication.") + '</div>' +
+      aiHtml +
+      '<div class="hitl-interactive-area">' +
+      '<div class="hitl-subhead">Select Ground Truth Specification or Provide Custom Override:</div>' +
+      '<div class="cand-list">' +
+      candsHtml +
+      '<label class="cand-item">' +
+      '<input type="radio" name="cand_' + esc(f.field) + '" value="__custom__">' +
+      '<div class="cand-custom-row">' +
+      '<span>Custom: </span>' +
+      '<input type="text" class="hitl-input-val" id="custVal_' + esc(f.field) + '" placeholder="e.g. 13000">' +
+      '<input type="text" class="hitl-input-unit" id="custUnit_' + esc(f.field) + '" placeholder="unit" value="' + esc(f.unit || '') + '">' +
+      '</div>' +
+      '</label>' +
+      '</div>' +
+      '<div class="hitl-form-grid">' +
+      '<div><label class="hitl-lbl">Reviewer Name / Role:</label>' +
+      '<input type="text" class="hitl-text-input" id="revBy_' + esc(f.field) + '" value="' + esc(personaObj().label) + '"></div>' +
+      '<div><label class="hitl-lbl">Audit Rationale &amp; Evidence:</label>' +
+      '<input type="text" class="hitl-text-input" id="revRat_' + esc(f.field) + '" value="Verified against primary OEM engineering catalog"></div>' +
+      '</div>' +
+      '<div class="hitl-actions">' +
+      '<button class="hitl-btn-resolve" data-apply="' + esc(f.field) + '">✓ Apply Human Resolution &amp; Verify</button>' +
+      '</div>' +
+      '</div>' +
+      '</div>';
+  }).join("");
+}
+
+function srcType(sid) {
+  const s = (state.data.sources || []).find(x => x.id === sid);
+  return s ? s.type : "";
+}
+function srcTitle(sid) {
+  const s = (state.data.sources || []).find(x => x.id === sid);
+  return s ? s.title : sid;
+}
+
+function openPanel(fieldName) {
+  const f = byField(fieldName);
+  if (!f) return;
+  $("pTitle").textContent = f.label;
+  $("pBadge").innerHTML = statusBadge(f);
+  const isConflict = f.conflicts && f.conflicts.length;
+  $("pVal").innerHTML = isConflict && f.status !== "verified"
+    ? f.conflicts.flatMap(c => c.values).map(v =>
+        esc(fmtNum(v.value)) + '<span class="unit">' + esc(v.unit || "") + '</span>').join('<span style="color:var(--tx3);font-size:15px"> vs </span>')
+    : esc(fmtNum(f.value)) + (f.unit ? '<span class="unit">' + esc(f.unit) + '</span>' : "");
+  $("pConfBar").style.width = (f.confidence * 100) + "%";
+  $("pConfBar").style.background = confColor(f.confidence);
+  $("pConfPct").textContent = (f.confidence * 100).toFixed(0) + "%";
+  $("pConfPct").style.color = confColor(f.confidence);
+
+  let html = "";
+
+  if (f.resolution_audit) {
+    const aud = f.resolution_audit;
+    html += '<div class="hitl-panel-resolved-banner">' +
+      '<div class="hitl-banner-top"><span>✓</span> <b>Human Verified Ground Truth</b>' +
+      '<button class="qbtn reset" data-undo="' + esc(f.field) + '" style="margin-left:auto">↺ Revert</button></div>' +
+      '<div class="hitl-banner-meta">Approved by <b>' + esc(aud.reviewer) + '</b> on ' + esc(aud.resolved_at ? aud.resolved_at.replace("T"," ").slice(0,19) : "") + ' UTC</div>' +
+      '<div class="hitl-banner-rat"><b>Rationale:</b> <i>"' + esc(aud.rationale) + '"</i></div>' +
+      '</div>';
+  } else if (f.status === "needs_review" || isConflict) {
+    let candOptions = [];
+    if (f.conflicts && f.conflicts.length) {
+      f.conflicts[0].values.forEach(v => {
+        candOptions.push({
+          source_id: v.source_id,
+          value: v.value,
+          unit: v.unit || f.unit || ""
+        });
+      });
+    } else if (f.sources && f.sources.length) {
+      f.sources.forEach(s => {
+        candOptions.push({
+          source_id: s.source_id,
+          value: s.value,
+          unit: s.unit || f.unit || ""
+        });
+      });
+    }
+
+    const candsHtml = candOptions.map((c, i) =>
+      '<label class="cand-item">' +
+      '<input type="radio" name="panel_cand_' + esc(f.field) + '" value="' + esc(c.value) + '" data-unit="' + esc(c.unit) + '" ' + (i === 0 ? 'checked' : '') + '>' +
+      '<div><span class="cand-src">' + esc(srcTitle(c.source_id)) + '</span>: ' +
+      '<span class="cand-val">' + esc(c.value) + (c.unit ? ' ' + esc(c.unit) : '') + '</span></div>' +
+      '</label>'
+    ).join("");
+
+    html += '<div class="hitl-box" style="margin-bottom:16px">' +
+      '<div class="hitl-subhead" style="color:var(--warn);font-weight:700">⚡ Human Adjudication Required</div>' +
+      '<div class="cand-list">' + candsHtml +
+      '<label class="cand-item">' +
+      '<input type="radio" name="panel_cand_' + esc(f.field) + '" value="__custom__">' +
+      '<div class="cand-custom-row">' +
+      '<span>Custom: </span>' +
+      '<input type="text" class="hitl-input-val" id="panel_custVal_' + esc(f.field) + '" placeholder="value">' +
+      '<input type="text" class="hitl-input-unit" id="panel_custUnit_' + esc(f.field) + '" placeholder="unit" value="' + esc(f.unit || '') + '">' +
+      '</div></label>' +
+      '</div>' +
+      '<div class="hitl-form-grid" style="grid-template-columns:1fr;margin-top:10px">' +
+      '<div><label class="hitl-lbl">Reviewer:</label><input type="text" class="hitl-text-input" id="panel_revBy_' + esc(f.field) + '" value="' + esc(personaObj().label) + '"></div>' +
+      '<div><label class="hitl-lbl">Rationale:</label><input type="text" class="hitl-text-input" id="panel_revRat_' + esc(f.field) + '" value="Verified against primary OEM engineering catalog"></div>' +
+      '</div>' +
+      '<div class="hitl-actions" style="margin-top:12px">' +
+      '<button class="hitl-btn-resolve" data-panel-apply="' + esc(f.field) + '">✓ Apply Resolution &amp; Verify</button>' +
+      '</div></div>';
+  }
+
+  html += '<div class="reason">' + esc(f.reasoning || "No reasoning recorded.") + '</div>';
+
+  if (f.validation_issues && f.validation_issues.length) {
+    html += f.validation_issues.map(i =>
+      '<div class="issue ' + (i.severity === "error" ? "err" : "") + '">⚠️ <span><b>[' + esc(i.rule_id) + ']</b> ' + esc(i.message) + '</span></div>').join("");
+  }
+
+  if (isConflict && f.status !== "verified") {
+    html += '<div class="confbanner"><span>⚡</span><div><b>Cross-source conflict.</b> ' +
+      esc(f.conflicts[0].reason) + '<br><small>Routing to human review — not auto-published.</small></div></div>';
+  }
+
+  html += '<div class="psec"><h3>Per-source evidence (' + f.sources.length + ')</h3></div>';
+  html += f.sources.map(s => {
+    const t = s.type || srcType(s.source_id);
+    const loc = (s.line_start === s.line_end) ? "L" + s.line_start : "L" + s.line_start + "–L" + s.line_end;
+    return '<div class="src-card">' +
+      '<div class="shead"><span class="schip ' + t + '">' + (TYPE_ICON[t] || "?") + '</span>' +
+      '<span class="stitle">' + esc(srcTitle(s.source_id)) + '</span>' +
+      '<span class="smethod">' + methodBadge(s.method) + '</span></div>' +
+      '<div class="sbody">' +
+      '<div class="srow"><span class="k">Extracted</span><span class="v">' + esc(fmtNum(s.value)) +
+      (s.unit ? ' <span style="color:var(--tx3)">' + esc(s.unit) + '</span>' : "") + '</span></div>' +
+      '<div class="srow"><span class="k">Source confidence</span><span class="v" style="color:' +
+      confColor(s.confidence) + '">' + (s.confidence * 100).toFixed(0) + '%</span></div>' +
+      '<div class="psec"><h3>Exact source span</h3></div>' +
+      '<div class="snippet">' + esc(s.snippet) + '<span class="loc">' + loc + '</span></div>' +
+      (s.reasoning ? '<div class="sreason">' + esc(s.reasoning) + '</div>' : "") +
+      '</div></div>';
+  }).join("");
+
+  if (f.dropped && f.dropped.length) {
+    html += '<div class="psec"><h3>Excluded from merge (' + f.dropped.length + ')</h3>' +
+      '<div class="dropnote">Unparseable value(s) — kept for the audit trail, but not counted among the contributing sources above.</div></div>';
+    html += f.dropped.map(s => {
+      const t = s.type || srcType(s.source_id);
+      const loc = (s.line_start === s.line_end) ? "L" + s.line_start : "L" + s.line_start + "–L" + s.line_end;
+      return '<div class="src-card dropped">' +
+        '<div class="shead"><span class="schip ' + t + '">' + (TYPE_ICON[t] || "?") + '</span>' +
+        '<span class="stitle">' + esc(srcTitle(s.source_id)) + '</span>' +
+        '<span class="smethod">excluded</span></div>' +
+        '<div class="sbody">' +
+        '<div class="srow"><span class="k">Raw value</span><span class="v">' + esc(fmtNum(s.value)) +
+        (s.unit ? ' <span style="color:var(--tx3)">' + esc(s.unit) + '</span>' : "") + '</span></div>' +
+        '<div class="snippet">' + esc(s.snippet) + '<span class="loc">' + loc + '</span></div>' +
+        (s.reasoning ? '<div class="sreason">' + esc(s.reasoning) + '</div>' : "") +
+        '</div></div>';
+    }).join("");
+  }
+
+  $("pScroll").innerHTML = html;
+  $("panel").classList.add("show");
+  $("backdrop").classList.add("show");
+  document.querySelectorAll("tbody tr").forEach(tr =>
+    tr.classList.toggle("open", tr.dataset.field === fieldName));
+}
+
+function closePanel() {
+  $("panel").classList.remove("show");
+  $("backdrop").classList.remove("show");
+  document.querySelectorAll("tbody tr.open").forEach(tr => tr.classList.remove("open"));
+}
+
+function recomputeMarketing() {
+  const d = state.data;
+  if (!d) return;
+  const verifiedMap = {};
+  d.fields.forEach(f => {
+    if (f.status === "verified" && f.value !== null && f.value !== undefined) {
+      verifiedMap[f.field] = f;
+    }
+  });
+
+  const templates = MKT_TEMPLATES[d.category] || [];
+  const sentences = [];
+  const citations = [];
+  const skipped = [];
+
+  templates.forEach(t => {
+    const allPresent = t.req.every(rf => verifiedMap[rf]);
+    if (allPresent) {
+      sentences.push(t.tpl);
+      t.req.forEach(rf => {
+        if (!citations.find(c => c.field === rf)) {
+          const f = verifiedMap[rf];
+          const srcList = (f.sources && f.sources.length) ? f.sources.map(s => ({
+            source_id: s.source_id,
+            snippet: s.snippet || String(s.value)
+          })) : [{ source_id: "human_review", snippet: f.resolution_audit ? f.resolution_audit.rationale : "Verified by catalog reviewer" }];
+          
+          citations.push({
+            field: f.field,
+            label: f.label,
+            value: String(f.value),
+            sources: srcList
+          });
+        }
+      });
+    } else {
+      skipped.push(t.tpl);
+    }
+  });
+
+  d.marketing = {
+    description: sentences.join(" "),
+    citations: citations,
+    sentences_skipped: skipped,
+    note: "Marketing copy only cites verified fields; unverified and conflicted fields are omitted."
+  };
+}
+
+function renderMarketing() {
+  const m = state.data.marketing;
+  let desc = m.description;
+  const re = /\{\{([a-z_]+)\}\}/g;
+  desc = desc.replace(re, (all, fname) => {
+    const c = m.citations.find(c => c.field === fname);
+    const label = c ? c.label : fname;
+    const srcs = c ? c.sources.map(s => srcTitle(s.source_id) + " (" + esc(s.snippet) + ")").join(" · ") : "";
+    return '<cite data-field="' + fname + '" title="' + esc(label) + ' — cited from: ' + srcs + '">' +
+      esc(fmtNum(c ? c.value : "")) + '</cite>';
+  });
+  $("mktDesc").innerHTML = desc || '<i style="color:var(--tx3)">No marketing description generated yet.</i>';
+  $("mktNote").textContent = m.note || "";
+  $("mktCit").innerHTML = m.citations.map(c =>
+    '<tr data-field="' + c.field + '"><td class="cfield">' + esc(c.label) + '</td>' +
+    '<td class="csrc" style="font-weight:600">' + esc(fmtNum(c.value)) + '</td>' +
+    '<td class="csrc">' + c.sources.map(s => srcTitle(s.source_id) + ' · "' + esc(s.snippet) + '"').join(' · ') + '</td></tr>').join("");
+  const skip = m.sentences_skipped || [];
+  $("mktSkip").style.display = skip.length ? "flex" : "none";
+  $("mktSkip").innerHTML = '<span>⚠️</span><span><b>Not cited:</b> ' + esc(skip.join("; ")) +
+    ' — needs_review / conflicted / missing fields are never used in marketing copy.</span>';
+}
+
+function renderSources() {
+  const d = state.data;
+  const fieldNames = {};
+  d.fields.forEach(f => f.sources.forEach(s => {
+    fieldNames[s.source_id] = fieldNames[s.source_id] || [];
+    fieldNames[s.source_id].push(f.label);
+  }));
+  $("sourcesBody").innerHTML = d.sources.map(s => {
+    const auth = (s.authority * 100).toFixed(0);
+    return '<div class="scard">' +
+      '<div class="sc-top"><span class="sc-ic ' + s.type + '">' + (TYPE_ICON[s.type] || "?") + '</span>' +
+      '<div><div class="sc-title">' + esc(s.title) + '</div>' +
+      '<div class="sc-sub">' + esc(s.id) + ' · ' + esc(s.path || "") + '</div></div></div>' +
+      '<div class="sc-body">' +
+      '<div class="row"><span class="k">Type</span><span class="v">' + TYPE_LABEL[s.type] + '</span></div>' +
+      '<div class="row"><span class="k">Source authority</span><span class="v">' + auth + '%</span></div>' +
+      '<div class="row"><span class="k">Lines parsed</span><span class="v">' + s.lines + '</span></div>' +
+      '<div class="row"><span class="k">Fields extracted</span><span class="v">' + s.fields_extracted + '</span></div>' +
+      '</div><div class="sc-fields">' +
+      (fieldNames[s.id] || []).map(f => '<span class="sf">' + esc(f) + '</span>').join("") +
+      '</div></div>';
+  }).join("");
+}
+
+function renderCatalog() {
+  if (!CATALOG_DATA) return;
+  const t = CATALOG_DATA.totals, pp = CATALOG_DATA.pipeline || {};
+  $("catCount").textContent = t.products;
+  $("catCount").className = "pill " + (t.failed ? "bad" : "warn");
+  $("catHero").innerHTML =
+    '<div class="stat neutral"><b>' + t.products + '</b><span>products</span></div>' +
+    '<div class="stat ok"><b>' + t.verified + '</b><span>verified fields</span></div>' +
+    '<div class="stat warn"><b>' + t.needs_review + '</b><span>needs review</span></div>' +
+    '<div class="stat bad"><b>' + t.conflicts + '</b><span>conflicts</span></div>' +
+    '<div class="stat neutral"><b>' + t.rules_run + '</b><span>rules run</span></div>' +
+    '<div class="stat neutral"><b>' + (pp.max_workers || "-") + '</b><span>workers</span></div>' +
+    '<div class="stat ' + (t.failed ? "bad" : "ok") + '"><b>' + t.failed + '</b><span>failed</span></div>';
+  $("catNote").textContent =
+    CATALOG_DATA.name + " · mode " + pp.mode + " · run " +
+    (pp.run_at || "").replace("T", " ").replace("Z", " UTC") +
+    " · click a row to inspect that product's full record";
+  const rows = CATALOG_DATA.products.filter(p =>
+    state.catStatus === "all" || p.status === state.catStatus);
+  $("catAll").textContent = CATALOG_DATA.products.length;
+  $("catOk").textContent = CATALOG_DATA.products.filter(p => p.status === "ok").length;
+  $("catFail").textContent = CATALOG_DATA.products.filter(p => p.status === "failed").length;
+  $("catEmpty").style.display = rows.length ? "none" : "block";
+  $("catBody").innerHTML = rows.map(p => {
+    const ok = p.status === "ok";
+    return '<tr data-catrow="' + esc(p.product_id) + '">' +
+      '<td><div class="fname">' + esc(p.product_id) + '</div>' +
+      '<div class="fdesc">' + (ok ? esc(p.category_label || p.category || "") : esc(p.error || "processing failed")) + '</div></td>' +
+      '<td>' + esc(p.category_label || p.category || "-") + '</td>' +
+      '<td class="fvalue">' + (ok ? p.verified : "—") + '</td>' +
+      '<td class="fvalue">' + (ok ? p.needs_review : "—") + '</td>' +
+      '<td class="fvalue">' + (ok ? p.conflicts : "—") + '</td>' +
+      '<td class="fvalue">' + (ok ? p.rules_run : "—") + '</td>' +
+      '<td>' + (ok ? '<span class="badge ok">✓ ok</span>' : '<span class="badge bad">✗ failed</span>') + '</td></tr>';
+  }).join("");
+}
+
+function resolveField(fieldName, chosenVal, chosenUnit, rationale, reviewer) {
+  const f = byField(fieldName);
+  if (!f) return;
+  const prevVal = f.value;
+  const prevStatus = f.status;
+  const prevConfidence = f.confidence;
+
+  let finalVal = chosenVal;
+  if (!isNaN(Number(chosenVal)) && chosenVal.trim() !== "") {
+    finalVal = Number(chosenVal);
+  }
+
+  f.value = finalVal;
+  if (chosenUnit !== undefined && chosenUnit !== null && chosenUnit !== "") {
+    f.unit = chosenUnit;
+  }
+  f.status = "verified";
+  f.confidence = 1.0;
+  f.flags = f.flags.filter(fl => fl !== "conflict" && fl !== "low_confidence");
+  if (!f.flags.includes("resolved_by_human")) f.flags.push("resolved_by_human");
+  
+  f.resolution_audit = {
+    reviewer: reviewer || personaObj().label,
+    persona: personaObj().label,
+    rationale: rationale || "Manually verified & approved against authoritative catalog spec",
+    resolved_at: new Date().toISOString(),
+    previous_value: prevVal,
+    previous_status: prevStatus,
+    previous_confidence: prevConfidence
+  };
+
+  state.auditLog.push({
+    timestamp: new Date().toISOString(),
+    product_id: state.data.product_id,
+    field: f.field,
+    label: f.label,
+    previous_value: prevVal,
+    resolved_value: finalVal,
+    unit: f.unit || "",
+    reviewer: f.resolution_audit.reviewer,
+    persona: f.resolution_audit.persona,
+    rationale: f.resolution_audit.rationale
+  });
+
+  const fields = state.data.fields;
+  state.data.summary.verified = fields.filter(x => x.status === "verified").length;
+  state.data.summary.needs_review = fields.filter(x => x.status === "needs_review").length;
+  state.data.summary.conflicts = fields.filter(x => x.flags.includes("conflict") && x.status !== "verified").length;
+
+  if (CATALOG_DATA) {
+    const pEntry = CATALOG_DATA.products.find(p => p.product_id === state.data.product_id);
+    if (pEntry) {
+      pEntry.verified = state.data.summary.verified;
+      pEntry.needs_review = state.data.summary.needs_review;
+      pEntry.conflicts = state.data.summary.conflicts;
+    }
+  }
+
+  const wasOpen = !!document.querySelector("tbody tr.open");
+  recomputeMarketing();
+  renderAll();
+  
+  if (wasOpen) {
+    openPanel(fieldName);
+  }
+}
+
+function undoResolution(fieldName) {
+  const f = byField(fieldName);
+  if (!f || !f.resolution_audit) return;
+  const aud = f.resolution_audit;
+  f.value = aud.previous_value;
+  f.status = aud.previous_status || "needs_review";
+  f.confidence = aud.previous_confidence !== undefined ? aud.previous_confidence : 0.40;
+  f.flags = f.flags.filter(fl => fl !== "resolved_by_human");
+  if (f.conflicts && f.conflicts.length && !f.flags.includes("conflict")) {
+    f.flags.push("conflict");
+  } else if (!f.flags.includes("low_confidence") && f.confidence < 0.75) {
+    f.flags.push("low_confidence");
+  }
+  delete f.resolution_audit;
+
+  state.auditLog.push({
+    timestamp: new Date().toISOString(),
+    product_id: state.data.product_id,
+    field: f.field,
+    label: f.label,
+    previous_value: "RESOLVED",
+    resolved_value: "REVERTED_TO_REVIEW",
+    unit: f.unit || "",
+    reviewer: "User",
+    persona: personaObj().label,
+    rationale: "Resolution undone — returned to review queue"
+  });
+
+  const fields = state.data.fields;
+  state.data.summary.verified = fields.filter(x => x.status === "verified").length;
+  state.data.summary.needs_review = fields.filter(x => x.status === "needs_review").length;
+  state.data.summary.conflicts = fields.filter(x => x.flags.includes("conflict") && x.status !== "verified").length;
+
+  if (CATALOG_DATA) {
+    const pEntry = CATALOG_DATA.products.find(p => p.product_id === state.data.product_id);
+    if (pEntry) {
+      pEntry.verified = state.data.summary.verified;
+      pEntry.needs_review = state.data.summary.needs_review;
+      pEntry.conflicts = state.data.summary.conflicts;
+    }
+  }
+
+  const wasOpen = !!document.querySelector("tbody tr.open");
+  recomputeMarketing();
+  renderAll();
+
+  if (wasOpen) {
+    openPanel(fieldName);
+  }
+}
+
+function exportResolvedJson() {
+  const d = state.data;
+  const jsonStr = JSON.stringify(d, null, 2);
+  const blob = new Blob([jsonStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = (d.product_id || "product") + "_resolved.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function exportAuditCsv() {
+  const d = state.data;
+  const headers = ["Timestamp", "Product_ID", "Field", "Label", "Previous_Value", "Resolved_Value", "Unit", "Reviewer", "Persona", "Rationale"];
+  let rows = [];
+
+  if (state.auditLog.length) {
+    rows = state.auditLog.map(e => [
+      '"' + (e.timestamp || "").replace(/"/g, '""') + '"',
+      '"' + (e.product_id || "").replace(/"/g, '""') + '"',
+      '"' + (e.field || "").replace(/"/g, '""') + '"',
+      '"' + (e.label || "").replace(/"/g, '""') + '"',
+      '"' + String(e.previous_value ?? "").replace(/"/g, '""') + '"',
+      '"' + String(e.resolved_value ?? "").replace(/"/g, '""') + '"',
+      '"' + (e.unit || "").replace(/"/g, '""') + '"',
+      '"' + (e.reviewer || "").replace(/"/g, '""') + '"',
+      '"' + (e.persona || "").replace(/"/g, '""') + '"',
+      '"' + (e.rationale || "").replace(/"/g, '""') + '"'
+    ]);
+  } else {
+    rows = d.fields.map(f => [
+      '"' + (d.pipeline.run_at || new Date().toISOString()) + '"',
+      '"' + d.product_id + '"',
+      '"' + f.field + '"',
+      '"' + f.label + '"',
+      '""',
+      '"' + String(f.value ?? "").replace(/"/g, '""') + '"',
+      '"' + (f.unit || "") + '"',
+      '"Automated Pipeline"',
+      '"Automated Pipeline Bot"',
+      '"' + (f.reasoning || f.status) + '"'
+    ]);
+  }
+
+  const csvContent = headers.join(",") + "\n" + rows.map(r => r.join(",")).join("\n");
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = (d.product_id || "product") + "_audit_log.csv";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function resetToInitial() {
+  if (confirm("Reset current product record back to raw automated pipeline state?")) {
+    state.auditLog = [];
+    if (state.initialData) {
+      loadData(JSON.parse(JSON.stringify(state.initialData)));
+    } else {
+      loadData(JSON.parse(JSON.stringify(SAMPLE)));
+    }
+  }
+}
+
+// --- unit conversion diff -------------------------------------------------
+// Mirrors pipeline/merge.py's UNIT_ALIASES for display only: units that alias
+// to the same canonical token (r/min vs rpm, PSI vs psi) are NOT a conversion.
+// Keep this map in sync with pipeline/merge.py UNIT_ALIASES (it is the source
+// of truth; the server also serves it for the ingest modal via /api/schemas).
+const UNIT_ALIAS = {
+  "r/min": "rpm", "min-1": "rpm", "min⁻¹": "rpm", "r.p.m.": "rpm", "rpm": "rpm",
+  "kn": "kN", "n": "N", "lbf": "lbf",
+  "kg": "kg", "g": "g", "mg": "mg", "lb": "lb", "lbs": "lb", "oz": "oz",
+  "mm": "mm", "cm": "cm", "m": "m", "in": "in", "inch": "in", "inches": "in", "ft": "ft",
+  "°c": "°C", "c": "°C", "degc": "°C", "deg c": "°C",
+  "°f": "°F", "f": "°F", "degf": "°F", "deg f": "°F", "k": "K",
+  "bar": "bar", "mbar": "mbar", "psi": "psi", "mpa": "MPa", "kpa": "kPa", "pa": "Pa", "atm": "atm",
+  "kw": "kW", "w": "W", "mw": "MW", "hp": "hp",
+  "nm": "Nm", "n.m": "Nm", "n·m": "Nm", "knm": "kNm",
+  "ft-lb": "ft-lb", "ft lb": "ft-lb", "lbf-ft": "ft-lb", "lbf·ft": "ft-lb", "in-lb": "in-lb",
+  "v": "V", "kv": "kV", "mv": "mV", "a": "A", "ma": "mA", "ka": "kA", "hz": "Hz"
+};
+const normUnit = (u) => {
+  if (!u) return "";
+  const k = String(u).trim().toLowerCase();
+  return UNIT_ALIAS[k] || k;
+};
+function collectConversions(data) {
+  const out = [];
+  (data && data.fields || []).forEach(f => {
+    if (!f.unit || f.value === null || f.value === undefined) return;
+    (f.sources || []).forEach(s => {
+      if (!s.unit || s.value === undefined || s.value === null || String(s.value).trim() === "") return;
+      if (normUnit(s.unit) === normUnit(f.unit)) return;
+      out.push({ field: f.field, label: f.label, source_id: s.source_id,
+        from: fmtNum(s.value) + " " + s.unit, to: fmtNum(f.value) + " " + f.unit });
+    });
+  });
+  return out;
+}
+function renderConversions() {
+  const convs = collectConversions(state.data);
+  const pill = $("convCount");
+  if (pill) pill.textContent = convs.length;
+  const body = $("convBody");
+  const empty = $("convEmpty");
+  if (!body) return;
+  empty.style.display = convs.length ? "none" : "block";
+  body.innerHTML = convs.map(c => {
+    const t = srcType(c.source_id);
+    return '<tr><td><div class="fname">' + esc(c.label) + '</div><div class="fdesc">' + esc(c.field) + "</div></td>" +
+      '<td class="conv-src"><span class="schip ' + t + '">' + (TYPE_ICON[t] || "SRC") + '</span> ' +
+      '<b>' + esc(c.source_id) + "</b></td>" +
+      '<td class="conv-cell conv-orig">' + esc(c.from) + "</td>" +
+      '<td class="conv-arrow">→</td>' +
+      '<td class="conv-cell conv-norm">' + esc(c.to) + "</td></tr>";
+  }).join("");
+}
+
+function renderAll() {
+  renderCatalog();
+  renderHeader();
+  renderFields();
+  renderQueue();
+  renderMarketing();
+  renderSources();
+  renderConversions();
+}
+
+// ---------- events ----------
+document.addEventListener("click", (e) => {
+  const catRow = e.target.closest("tbody tr[data-catrow]");
+  if (catRow) {
+    const pid = catRow.dataset.catrow;
+    if (RECORDS_MAP[pid]) {
+      loadData(RECORDS_MAP[pid]);
+      document.querySelector('.tab[data-tab="fields"]').click();
+    }
+    return;
+  }
+  const cchip = e.target.closest("#catFilters .chip");
+  if (cchip) {
+    state.catStatus = cchip.dataset.f;
+    document.querySelectorAll("#catFilters .chip").forEach(c =>
+      c.classList.toggle("on", c === cchip));
+    renderCatalog();
+    return;
+  }
+  const row = e.target.closest("tbody tr[data-field]");
+  if (row) { openPanel(row.dataset.field); return; }
+  const cit = e.target.closest(".cit tr[data-field]");
+  if (cit) { openPanel(cit.dataset.field); return; }
+  const cite = e.target.closest("cite[data-field]");
+  if (cite) {
+    const f = cite.dataset.field;
+    document.querySelector('.tab[data-tab="fields"]').click();
+    openPanel(f);
+    return;
+  }
+  const qbtn = e.target.closest(".qbtn");
+  if (qbtn) {
+    if (qbtn.dataset.open) { openPanel(qbtn.dataset.open); return; }
+    if (qbtn.dataset.undo) { undoResolution(qbtn.dataset.undo); return; }
+  }
+  const applyBtn = e.target.closest("button[data-apply]");
+  if (applyBtn) {
+    const fieldName = applyBtn.dataset.apply;
+    const selectedRadio = document.querySelector('input[name="cand_' + fieldName + '"]:checked');
+    let chosenVal = selectedRadio ? selectedRadio.value : "";
+    let chosenUnit = selectedRadio ? (selectedRadio.dataset.unit || "") : "";
+    if (chosenVal === "__custom__") {
+      const custValInput = $("custVal_" + fieldName);
+      const custUnitInput = $("custUnit_" + fieldName);
+      chosenVal = custValInput ? custValInput.value.trim() : "";
+      chosenUnit = custUnitInput ? custUnitInput.value.trim() : chosenUnit;
+    }
+    if (!chosenVal) {
+      alert("Please select a candidate value or enter a custom override.");
+      return;
+    }
+    const reviewer = ($("revBy_" + fieldName) && $("revBy_" + fieldName).value.trim()) || personaObj().label;
+    const rationale = ($("revRat_" + fieldName) && $("revRat_" + fieldName).value.trim()) || "Verified by human reviewer";
+    resolveField(fieldName, chosenVal, chosenUnit, rationale, reviewer);
+    return;
+  }
+  const panelApplyBtn = e.target.closest("button[data-panel-apply]");
+  if (panelApplyBtn) {
+    const fieldName = panelApplyBtn.dataset.panelApply;
+    const selectedRadio = document.querySelector('input[name="panel_cand_' + fieldName + '"]:checked');
+    let chosenVal = selectedRadio ? selectedRadio.value : "";
+    let chosenUnit = selectedRadio ? (selectedRadio.dataset.unit || "") : "";
+    if (chosenVal === "__custom__") {
+      const custValInput = $("panel_custVal_" + fieldName);
+      const custUnitInput = $("panel_custUnit_" + fieldName);
+      chosenVal = custValInput ? custValInput.value.trim() : "";
+      chosenUnit = custUnitInput ? custUnitInput.value.trim() : chosenUnit;
+    }
+    if (!chosenVal) {
+      alert("Please select a candidate value or enter a custom override.");
+      return;
+    }
+    const reviewer = ($("panel_revBy_" + fieldName) && $("panel_revBy_" + fieldName).value.trim()) || personaObj().label;
+    const rationale = ($("panel_revRat_" + fieldName) && $("panel_revRat_" + fieldName).value.trim()) || "Verified by human reviewer";
+    resolveField(fieldName, chosenVal, chosenUnit, rationale, reviewer);
+    return;
+  }
+  const undoBtn = e.target.closest("button[data-undo]");
+  if (undoBtn) {
+    undoResolution(undoBtn.dataset.undo);
+    return;
+  }
+  const chip = e.target.closest("#statusFilters .chip");
+  if (chip) {
+    state.status = chip.dataset.f;
+    document.querySelectorAll("#statusFilters .chip").forEach(c =>
+      c.classList.toggle("on", c === chip));
+    renderFields();
+  }
+});
+
+document.querySelectorAll(".tab").forEach(t =>
+  t.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(x => x.classList.toggle("active", x === t));
+    document.querySelectorAll(".tabpane").forEach(p =>
+      p.classList.toggle("active", p.id === "tab-" + t.dataset.tab));
+  }));
+
+$("search").addEventListener("input", (e) => { state.search = e.target.value; renderFields(); });
+$("pClose").addEventListener("click", closePanel);
+$("backdrop").addEventListener("click", closePanel);
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape") return;
+  closePanel();
+  $("confModal").classList.remove("show");
+  if ($("ingestModal")) $("ingestModal").classList.remove("show");
+});
+
+// confidence-model explainer
+$("confOpen").addEventListener("click", () => $("confModal").classList.add("show"));
+$("confClose").addEventListener("click", () => $("confModal").classList.remove("show"));
+$("confModal").addEventListener("click", (e) => {
+  if (e.target === $("confModal")) $("confModal").classList.remove("show");
+});
+
+// topbar export buttons
+if ($("btnExportJson")) $("btnExportJson").addEventListener("click", exportResolvedJson);
+if ($("btnExportCsv")) $("btnExportCsv").addEventListener("click", exportAuditCsv);
+if ($("btnReset")) $("btnReset").addEventListener("click", resetToInitial);
+
+// ---------- drag & drop product JSON ----------
+const dz = $("dropzone");
+window.addEventListener("dragover", (e) => { e.preventDefault(); dz.classList.add("show"); });
+window.addEventListener("dragleave", () => dz.classList.remove("show"));
+window.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dz.classList.remove("show");
+  const file = e.dataTransfer.files && e.dataTransfer.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      if (!data.fields || !data.summary) throw new Error("not a product record");
+      loadData(data);
+    } catch (err) {
+      alert("Could not parse product JSON: " + err.message);
+    }
+  };
+  reader.readAsText(file);
+});
+
+function loadData(data) {
+  state.data = JSON.parse(JSON.stringify(data));
+  if (!state.initialData) {
+    state.initialData = JSON.parse(JSON.stringify(data));
+  }
+  renderAll();
+}
+
+loadData(SAMPLE);
+if (CATALOG_DATA) {
+  renderCatalog();
+  document.querySelector('.tab[data-tab="catalog"]').click();
+}
+
+// ==================== live ingestion (Add Product / Source Ingestion) ====================
+let INGEST_CATS = {
+  "deep_groove_ball_bearing": { category_label: "Deep groove ball bearing", fields: [{label: "Bore diameter", unit: "mm"}, {label: "Outer diameter", unit: "mm"}, {label: "Width", unit: "mm"}] },
+  "two_way_ball_valve": { category_label: "Two-way ball valve", fields: [{label: "Connection size", unit: "in"}, {label: "Max pressure", unit: "PSI"}, {label: "Material", unit: null}] },
+  "electric_motor": { category_label: "Three-phase induction motor", fields: [{label: "Power", unit: "kW"}, {label: "Speed", unit: "rpm"}, {label: "Voltage", unit: "V"}] },
+  "helical_gear_reducer": { category_label: "Helical gear reducer", fields: [{label: "Ratio", unit: ":1"}, {label: "Input speed", unit: "rpm"}, {label: "Output speed", unit: "rpm"}] }
+};
+let INGEST_AUTH = { pdf: 0.95, web: 0.85, ocr: 0.70 };
+
+const INGEST_STAGES = [
+  "Parse source snippets into line-numbered blocks",
+  "Extract attributes per source (values + exact snippets + confidence)",
+  "Merge · unit normalization (kN↔N, HP↔kW, PSI↔bar, ft·lb↔N·m) · agreement · conflict flagging",
+  "Validation rule table (plausibility + schema enums)",
+  "Confidence routing + AI semantic review",
+  "Marketing copy citing only verified fields"
+];
+
+const INGEST_DEMO = {
+  deep_groove_ball_bearing: {
+    product_id: "6210-2RS",
+    sources: [
+      { type: "pdf", title: "SKF 6210-2RS datasheet (p.1)", text: "SKF 6210-2RS Deep groove ball bearing\nd [mm] 50\nD [mm] 90\nB [mm] 20\nBasic dynamic load rating C 37.1 kN\nBasic static load rating C0 23.2 kN\nLimiting speed 7500 r/min\nMass 0.466 kg\nSeal  Contact seal, RS1 on both sides\nInternal clearance  CN" },
+      { type: "web", title: "Distributor product page — 6210-2RS", text: "6210-2RS Ball Bearing\nBore: 50 mm, OD: 90 mm, Width: 20 mm.\nDynamic load rating  |  37 100 N\nStatic load rating  |  23 200 N\nMax speed (grease)  |  7 000 rpm\nOperating temperature  |  -20 °C to +120 °C\nSeal  |  2RS (rubber contact)\nInternal clearance  |  CN\nMade in  |  Japan" },
+      { type: "ocr", title: "Photo OCR — bearing face stamping", text: "50x90x20\n2RS\nJAPAN\nABEC 1" }
+    ]
+  },
+  electric_motor: {
+    product_id: "ME-160M-4",
+    sources: [
+      { type: "pdf", title: "IEC 60034 datasheet ME-160M-4 (p.1)", text: "Part no.  ME-160M-4\nBrand  VoltTech\nOutput power  11.2 kW\nRated voltage  400 V\nRated current  21.5 A\nRated speed  1460 r/min\nFrequency  50 Hz\nEfficiency  91.5 %\nFrame size  160M\nProtection  IP55\nInsulation class  F\nMounting  B3\nMass  108 kg" },
+      { type: "web", title: "Distributor web specs — ME-160M-4", text: "ME-160M-4 Induction Motor\nOutput power  |  15 HP\nVoltage  |  400 V\nRated current  |  21.5 A\nRated speed  |  1500 rpm\nEfficiency  |  91.5%\nFrame size  |  160M\nProtection  |  IP55\nInsulation  |  Class F\nMounting  |  B3\nWeight  |  108 kg" }
+    ]
+  },
+  "2_way_ball_valve": {
+    product_id: "V3000-SS",
+    sources: [
+      { type: "pdf", title: "Datasheet V3000-SS (rev 3, p.1)", text: "Part no.  V3000-SS\nBrand  AcmeFlow\nDN [mm]  50\nPressure rating  40 bar\nBody material  stainless_steel\nActuation  manual\nOperating temperature  -20 °C to 150 °C\nWeight  3.4 kg" },
+      { type: "web", title: "Distributor specs — V3000-SS", text: "V3000-SS Two-Way Ball Valve\nConnection  |  DN 50 mm\nPressure rating  |  580 PSI\nBody material  |  stainless steel\nActuation  |  manual lever\nOperating temperature  |  -20 °C to 150 °C\nWeight  |  3.4 kg" }
+    ]
+  },
+  helical_gear_reducer: {
+    product_id: "GRX-225-M",
+    sources: [
+      { type: "pdf", title: "Datasheet GRX-225-M (rev 2, p.1)", text: "Part no.  GRX-225-M\nBrand  HelmDrive\nRatio  25 : 1\nInput speed  1450 r/min\nOutput speed  58 r/min\nRated torque  450 N·m\nService factor  1.4\nEfficiency  94 %\nMounting  B3\nProtection  IP55\nLubrication  oil\nMass  62 kg" },
+      { type: "web", title: "Distributor specs — GRX-225-M", text: "GRX-225-M Gear Reducer\nRatio  |  25 : 1\nInput speed  |  1450 rpm\nOutput speed  |  60 rpm\nRated torque  |  332 ft-lb\nService factor  |  1.4\nEfficiency  |  94%\nMounting  |  B3\nProtection  |  IP55\nLubrication  |  oil\nWeight  |  62 kg" },
+      { type: "ocr", title: "Nameplate photo OCR (gear case)", text: "GRX-225-M\n25 : 1\n450 N·m\nIP55\n62 kg" }
+    ]
+  },
+  // stress cases — messy typography, OCR typos and imperial units that the
+  // pipeline must normalize before it can agree on values
+  bearing_stress: {
+    product_id: "6208-2RS",
+    category: "deep_groove_ball_bearing",
+    sources: [
+      { type: "pdf", title: "SKF 6208-2RS datasheet (p.1)", text: "SKF 6208-2RSH Deep groove ball bearing\nd [mm] 40\nD [mm] 80\nB [mm] 18\nBasic dynamic load rating C 14,0 kN\nBasic static load rating C0 7,8 kN\nLimiting speed 12 000 r/min\nMass 0.28 lb\nSeal  Contact seal, RS1 on both sides\nInternal clearance  CN" },
+      { type: "web", title: "Distributor product page — 6208-2RS", text: "6208-2RS Ball Bearing\nBore: 40 mm, OD: 80 mm, Width: 18 mm.\nDynamic load rating  |  14 000 N\nStatic load rating  |  7 800 N\nMax speed (grease)  |  12 000 rpm\nOperating temperature  |  -20 °C to +120 °C\nSeal  |  2RS (rubber contact)\nInternal clearance  |  CN\nMade in  |  Japan" },
+      { type: "ocr", title: "Photo OCR — bearing face stamping (noisy)", text: "40x80x18\n2R5\nJAPAN\nABEC 1" }
+    ]
+  },
+  valve_imperial: {
+    product_id: "V-IM-1",
+    category: "2_way_ball_valve",
+    sources: [
+      { type: "pdf", title: "Datasheet V-IM-1 (metric, p.1)", text: "Part no.  V-IM-1\nBrand  AcmeFlow\nDN [mm]  50\nPressure rating  40 bar\nBody material  stainless_steel\nActuation  manual\nOperating temperature  -20 °C to 150 °C\nWeight  3.4 kg" },
+      { type: "web", title: "US distributor specs — V-IM-1 (imperial)", text: "V-IM-1 Two-Way Ball Valve\nConnection  |  1.97 in\nPressure rating  |  580 PSI\nBody material  |  stainless steel\nActuation  |  manual lever\nOperating temperature  |  -20 °C to 150 °C\nWeight  |  7.5 lb" }
+    ]
+  }
+};
+
+function ingestSetStatus(msg, cls) {
+  const el = $("ingestStatus");
+  el.textContent = msg || "";
+  el.className = "ingest-status" + (cls ? " " + cls : "");
+}
+
+function ingestCatOptions() {
+  const sel = $("ingestCat");
+  sel.innerHTML = Object.keys(INGEST_CATS).map(k =>
+    '<option value="' + esc(k) + '">' + esc(INGEST_CATS[k].category_label) + "</option>").join("");
+}
+
+function renderIngestFieldsPreview() {
+  const cat = $("ingestCat").value;
+  const info = INGEST_CATS[cat];
+  $("ingestFieldsPreview").innerHTML = (info && info.fields || []).map(f => {
+    const unit = f.unit ? ' <span style="color:var(--tx3)">' + esc(f.unit) + "</span>" : "";
+    return '<span class="sf">' + esc(f.label) + unit + "</span>";
+  }).join("") || '<span class="sf">loading schemas…</span>';
+}
+
+function ingestSrcRow(type, title, text) {
+  const div = document.createElement("div");
+  div.className = "ingest-src";
+  const types = ["pdf", "web", "ocr"];
+  const typeOpts = types.map(t =>
+    '<option value="' + t + '"' + (t === type ? " selected" : "") + ">" +
+    (t === "pdf" ? "PDF datasheet" : t === "web" ? "Web page" : "Photo OCR") + "</option>").join("");
+  div.innerHTML =
+    '<div class="ingest-src-top">' +
+      '<select class="ingest-stype">' + typeOpts + "</select>" +
+      '<input class="ingest-stitle" placeholder="Source title (e.g. SKF datasheet p.1)" value="' + esc(title || "") + '" spellcheck="false">' +
+      '<span class="ingest-auth"></span>' +
+      '<button class="ingest-upload" type="button" title="Upload a file: .txt / .csv / .html / .md — or a PDF-text export">📄 Upload file</button>' +
+      '<span class="ingest-fname"></span>' +
+      '<input class="ingest-file" type="file" accept=".txt,.csv,.html,.htm,.md,.log,.json,.pdf,text/plain">' +
+      '<button class="ingest-srm" title="Remove source">×</button>' +
+    "</div>" +
+    '<textarea class="ingest-stext" placeholder="Paste the raw text from this source… (or drag &amp; drop a file here)" spellcheck="false">' + esc(text || "") + "</textarea>";
+  const auth = div.querySelector(".ingest-auth");
+  const updAuth = () => {
+    const t = div.querySelector(".ingest-stype").value;
+    const a = INGEST_AUTH[t] || 0.8;
+    auth.innerHTML = "authority <b>" + a.toFixed(2) + "</b>";
+  };
+  const uploadBtn = div.querySelector(".ingest-upload");
+  const fileInput = div.querySelector(".ingest-file");
+  const fname = div.querySelector(".ingest-fname");
+  const area = div.querySelector(".ingest-stext");
+  const titleIn = div.querySelector(".ingest-stitle");
+  const loadFile = (f) => {
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      const txt = String(r.result || "");
+      const nonPrintable = txt.replace(/[\t\n\r\x20-\x7e\u00a0-\ufffc\ufffe-\uffff]/g, "").length;
+      const mojibake = (txt.match(/\ufffd/g) || []).length;   // U+FFFD replacement chars
+      const looksBinary = txt.indexOf("\u0000") >= 0 || nonPrintable > txt.length * 0.05 || mojibake > txt.length * 0.01;
+      area.value = txt;
+      fname.textContent = "📎 " + f.name + " · " +
+        (f.size > 1024 ? (f.size / 1024).toFixed(0) + " KB" : f.size + " B");
+      fname.title = f.name;
+      if (!titleIn.value.trim()) titleIn.value = f.name;
+      if (looksBinary) {
+        ingestSetStatus("⚠ That file looks like a binary document (PDF/image?) — its text may be garbled. Prefer a .txt export or pasted text.", "warn");
+      } else {
+        ingestSetStatus("📄 " + f.name + " loaded into this source snippet.", "");
+      }
+    };
+    r.readAsText(f);
+  };
+  uploadBtn.addEventListener("click", () => fileInput.click());
+  fileInput.addEventListener("change", () => { loadFile(fileInput.files && fileInput.files[0]); fileInput.value = ""; });
+  ["dragover", "dragenter"].forEach(ev => area.addEventListener(ev, (e) => {
+    e.preventDefault();
+    div.classList.add("drag");
+  }));
+  ["dragleave", "drop"].forEach(ev => area.addEventListener(ev, (e) => {
+    e.preventDefault();
+    div.classList.remove("drag");
+  }));
+  area.addEventListener("drop", (e) => {
+    const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) loadFile(f);
+  });
+  div.querySelector(".ingest-stype").addEventListener("change", updAuth);
+  updAuth();
+  div.querySelector(".ingest-srm").addEventListener("click", () => {
+    div.remove();
+    if (!$("ingestSources").children.length) ingestAddSource("pdf", "", "");
+  });
+  return div;
+}
+
+function ingestAddSource(type, title, text) {
+  $("ingestSources").appendChild(ingestSrcRow(type || "pdf", title || "", text || ""));
+}
+
+function ingestCollect() {
+  const sources = Array.from($("ingestSources").querySelectorAll(".ingest-src")).map((div, i) => ({
+    id: "src_" + (i + 1),
+    type: div.querySelector(".ingest-stype").value,
+    title: div.querySelector(".ingest-stitle").value.trim(),
+    text: div.querySelector(".ingest-stext").value
+  })).filter(s => s.text && s.text.trim());
+  return {
+    product_id: $("ingestPid").value.trim(),
+    category: $("ingestCat").value,
+    sources: sources
+  };
+}
+
+function ingestRunDemo(key) {
+  const demo = INGEST_DEMO[key];
+  if (!demo) return;
+  const catKey = demo.category || key;
+  if (INGEST_CATS[catKey]) $("ingestCat").value = catKey;
+  renderIngestFieldsPreview();
+  $("ingestPid").value = demo.product_id;
+  $("ingestSources").innerHTML = "";
+  demo.sources.forEach(s => ingestAddSource(s.type, s.title, s.text));
+  $("ingestResult").style.display = "none";
+  $("ingestProgress").style.display = "none";
+  ingestSetStatus("Test case loaded — hit ▶ Run Pipeline Extraction", "");
+}
+
+function ingestShowResult(res) {
+  const rec = res.record, s = rec.summary;
+  const convs = collectConversions(rec);
+  const stats = [
+    ['<div class="ingest-stat ok"><b>' + s.verified + '</b><span>verified</span></div>'],
+    ['<div class="ingest-stat ' + (s.needs_review ? "warn" : "ok") + '"><b>' + s.needs_review + '</b><span>needs review</span></div>'],
+    ['<div class="ingest-stat ' + (s.conflicts ? "bad" : "ok") + '"><b>' + s.conflicts + '</b><span>conflicts</span></div>'],
+    ['<div class="ingest-stat"><b>' + convs.length + '</b><span>unit conversion' + (convs.length === 1 ? "" : "s") + '</span></div>']
+  ].join("");
+  $("ingestResultStats").innerHTML = stats;
+
+  $("ingestResultConvs").innerHTML =
+    '<div class="rp-title">Unit normalization diff</div>' +
+    (convs.length
+      ? '<ul>' + convs.map(c => '<li class="cv">' + esc(c.from) + ' <span class="arr">→</span> <b>' + esc(c.to) + '</b></li>').join("") + '</ul>'
+      : '<span class="mkt-line">All sources already used the schema unit.</span>');
+
+  const conflicts = rec.fields.filter(f => f.flags.includes("conflict") && f.status !== "verified");
+  $("ingestResultConflicts").innerHTML =
+    '<div class="rp-title">Conflicts detected → routed to review</div>' +
+    (conflicts.length
+      ? '<ul>' + conflicts.map(f => '<li><b>' + esc(f.label) + '</b>: ' + esc(f.reasoning || "sources disagree") + '</li>').join("") + '</ul>'
+      : '<span class="mkt-line">No conflicts — every multi-source field agrees.</span>');
+
+  const mkt = rec.marketing && rec.marketing.description ? rec.marketing.description : "";
+  $("ingestResultMkt").innerHTML =
+    '<div class="rp-title">Marketing copy (synthesized from verified fields only)</div>' +
+    '<div class="mkt-line">“' + esc(mkt.slice(0, 220)) + (mkt.length > 220 ? "…" : "") + '”</div>';
+
+  $("ingestResult").style.display = "flex";
+}
+
+function ingestShowProgress() {
+  const wrap = $("ingestProgress");
+  wrap.style.display = "flex";
+  wrap.innerHTML = INGEST_STAGES.map((s, i) =>
+    '<div class="istage" data-stage="' + i + '">' + esc(s) + "</div>").join("");
+  return wrap.querySelectorAll(".istage");
+}
+
+async function ingestRun() {
+  const payload = ingestCollect();
+  if (!payload.product_id) {
+    ingestSetStatus("Enter a SKU / product name first.", "warn");
+    return;
+  }
+  if (!payload.sources.length) {
+    ingestSetStatus("Paste at least one source snippet.", "warn");
+    return;
+  }
+  const btn = $("ingestRun");
+  btn.disabled = true;
+  btn.textContent = "⏳ Running…";
+  ingestSetStatus("", "");
+  const stages = ingestShowProgress();
+  let cur = 0;
+  stages[0].classList.add("active");
+  const timer = setInterval(() => {
+    if (cur < stages.length - 1) {
+      stages[cur].classList.remove("active");
+      stages[cur].classList.add("done");
+      cur += 1;
+      stages[cur].classList.add("active");
+    }
+  }, 420);
+  const finish = (okMsg) => {
+    clearInterval(timer);
+    stages.forEach(s => { s.classList.remove("active"); s.classList.add("done"); });
+    btn.disabled = false;
+    btn.textContent = "▶ Run Pipeline Extraction";
+    if (okMsg) ingestSetStatus(okMsg, "ok");
+  };
+  try {
+    const resp = await fetch("/api/ingest", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const res = await resp.json();
+    if (!resp.ok || !res.ok) {
+      finish();
+      ingestSetStatus("Pipeline error: " + (res.error || "unknown"), "err");
+      return;
+    }
+    const s = res.record.summary;
+    const convs = collectConversions(res.record);
+    finish("✓ Ingested " + res.record.product_id + " — " + s.verified + " verified · " +
+      s.needs_review + " needs review · " + s.conflicts + " conflict(s) · " +
+      convs.length + " unit conversion" + (convs.length === 1 ? "" : "s"));
+    if (CATALOG_DATA && res.catalog) {
+      CATALOG_DATA.products = res.catalog.products;
+      CATALOG_DATA.totals = res.catalog.totals;
+      CATALOG_DATA.pipeline = res.catalog.pipeline;
+    }
+    if (res.records) {
+      Object.keys(res.records).forEach(k => { RECORDS_MAP[k] = res.records[k]; });
+    }
+    state.initialData = JSON.parse(JSON.stringify(res.record));
+    loadData(res.record);
+    showIngestToast(res);
+    document.querySelector('.tab[data-tab="fields"]').click();
+    ingestShowResult(res);
+    $("ingestResult").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  } catch (err) {
+    finish();
+    $("ingestProgress").style.display = "none";
+    ingestSetStatus("Server not reachable — start it with `python run_ingest.py` and reload the page.", "err");
+  }
+}
+
+function ingestOpen() {
+  $("ingestModal").classList.add("show");
+  if (!Object.keys(INGEST_CATS).length) {
+    ingestSetStatus("ⓘ Schemas not loaded — start the server with `python run_ingest.py`, then reload. (Demo snippets still work for form-filling.)", "warn");
+  }
+  if (!$("ingestSources").children.length) ingestAddSource("pdf", "", "");
+  $("ingestResult").style.display = "none";
+  $("ingestProgress").style.display = "none";
+  ingestSetStatus("", "");
+}
+
+function ingestClose() {
+  $("ingestModal").classList.remove("show");
+  ingestSetStatus("", "");
+}
+
+function showIngestToast(res) {
+  const s = res.record.summary;
+  const convs = collectConversions(res.record);
+  const t = $("toast");
+  t.innerHTML =
+    '<div><div class="tt">✓ Ingestion complete</div><div><b>' + esc(res.record.product_id) +
+    '</b> added to the catalog — ' + s.verified + ' verified · ' + s.needs_review +
+    ' needs review · ' + s.conflicts + ' conflict(s) · ' + convs.length +
+    ' unit conversion' + (convs.length === 1 ? "" : "s") + '. Review queue populated.</div></div>' +
+    '<button id="toastClose">✕</button>';
+  t.classList.add("show");
+  const close = () => t.classList.remove("show");
+  t.querySelector("#toastClose").addEventListener("click", close);
+  setTimeout(close, 8000);
+}
+
+async function ingestFetchSchemas() {
+  ingestCatOptions();
+  renderIngestFieldsPreview();
+  try {
+    const resp = await fetch("/api/schemas");
+    if (!resp.ok) return;
+    const res = await resp.json();
+    if (!res.ok || !res.categories) return;
+    INGEST_CATS = res.categories;
+    if (res.authority) INGEST_AUTH = res.authority;
+    ingestCatOptions();
+    renderIngestFieldsPreview();
+  } catch (e) { /* server not running — modal shows a hint instead */ }
+}
+
+if ($("btnIngest")) $("btnIngest").addEventListener("click", ingestOpen);
+if ($("ingestClose")) $("ingestClose").addEventListener("click", ingestClose);
+if ($("ingestModal")) $("ingestModal").addEventListener("click", (e) => {
+  if (e.target === $("ingestModal")) ingestClose();
+});
+if ($("ingestAddSource")) $("ingestAddSource").addEventListener("click", () => ingestAddSource("pdf", "", ""));
+if ($("ingestCat")) $("ingestCat").addEventListener("change", renderIngestFieldsPreview);
+if ($("ingestRun")) $("ingestRun").addEventListener("click", ingestRun);
+if ($("ingestPid")) $("ingestPid").addEventListener("keydown", (e) => { if (e.key === "Enter") ingestRun(); });
+if ($("ingestCase")) $("ingestCase").addEventListener("change", (e) => {
+  if (e.target.value) { ingestRunDemo(e.target.value); e.target.value = ""; }
+});
+if ($("ingestResultOpen")) $("ingestResultOpen").addEventListener("click", ingestClose);
+if ($("ingestResultAgain")) $("ingestResultAgain").addEventListener("click", () => {
+  $("ingestResult").style.display = "none";
+  $("ingestProgress").style.display = "none";
+  ingestSetStatus("", "");
+});
+ingestFetchSchemas();
+</script>
+</body>
+</html>
